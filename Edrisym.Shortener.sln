@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E7FB1BDF-13ED-459C-86F6-46BC314D73DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A9F29E87-5DCF-441E-B732-70064EAF64D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortener", "Shortener\Shortener.csproj", "{1D26104B-DD1B-47B1-9C2A-DE9537621CA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortener.UnitTests", "Shortener.UnitTests\Shortener.UnitTests.csproj", "{F755D641-8A61-4865-B4EC-A4D3CCB13CEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D26104B-DD1B-47B1-9C2A-DE9537621CA2} = {E7FB1BDF-13ED-459C-86F6-46BC314D73DF}
+		{F755D641-8A61-4865-B4EC-A4D3CCB13CEE} = {A9F29E87-5DCF-441E-B732-70064EAF64D0}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D26104B-DD1B-47B1-9C2A-DE9537621CA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D26104B-DD1B-47B1-9C2A-DE9537621CA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D26104B-DD1B-47B1-9C2A-DE9537621CA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D26104B-DD1B-47B1-9C2A-DE9537621CA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F755D641-8A61-4865-B4EC-A4D3CCB13CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F755D641-8A61-4865-B4EC-A4D3CCB13CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F755D641-8A61-4865-B4EC-A4D3CCB13CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F755D641-8A61-4865-B4EC-A4D3CCB13CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
