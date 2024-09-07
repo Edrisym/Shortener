@@ -2,8 +2,8 @@ namespace Shortener.Services;
 
 public class ShortenService : IShortenService
 {
-    public string ShortenUrl(string url)
+    public string MakeShortenUrl(string url)
     {
-        return "Test";
+        return "12vhs";
     }
 }

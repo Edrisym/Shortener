@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shortener.Common;
-using Shortener.Primitives.ApiResultWrapper;
-using Shortener.Primitives.Response;
 using Shortener.Services;
 
 namespace Shortener.Endpoints;
@@ -11,35 +9,24 @@ public static class ShortenerEndpoint
 {
     public static void MapShortenEndpoint(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/v1");
-
-        //TODO
-
-        group.MapPost("/shorten",
-                async Task<Results<Ok<Result>, BadRequest<Result>>>
-                    ([FromBody] ShortenUrl request, IShortenService shortenService) =>
+        app.MapPost("/shorten",
+                async ([FromBody] ShortenUrl request,
+                    IShortenService shortenService,
+                    IValidator<ShortenUrl> validator) =>
                 {
-                    var result = shortenService.ShortenUrl(request.Url);
+                    var results = await validator.ValidateAsync(request);
 
-                    //TODO
-                    if (string.IsNullOrWhiteSpace(result))
+                    if (!results.IsValid)
                     {
-                        return Result.Failure();
+                        return Results.ValidationProblem(results.ToDictionary());
                     }
 
-                    return TypedResults.Ok(new Result(true, "", []));
+                    var result = shortenService.MakeShortenUrl(request.Url);
+                    return Results.Ok(new { ShortenedUrl = result });
                 })
-            .AddEndpointFilter<ShortenerEndpointFilter>()
-            .WithName("Shorten you URL")
+            .WithName("Shorten your URL")
             .ProducesProblem(StatusCodes.Status409Conflict)
+            .Produces(StatusCodes.Status200OK, typeof(object))
             .ProducesValidationProblem();
-    }
-}
-
-public class ShortenerEndpointFilter : IEndpointFilter
-{
-    public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
-    {
-        throw new NotImplementedException();
     }
 }

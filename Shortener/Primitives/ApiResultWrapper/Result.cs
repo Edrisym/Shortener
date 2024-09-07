@@ -8,7 +8,7 @@ public class Result
     public Result(bool isSuccess,
         string message, Error[] errors)
     {
-        ValidateInput(isSuccess, message, errors);
+        // ValidateInput(isSuccess, message, errors);
         IsSuccess = isSuccess;
         Message = message;
         Errors = errors;
