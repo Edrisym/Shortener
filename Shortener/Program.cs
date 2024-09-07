@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Shortener.Endpoints;
+using Shortener.Models;
 using Shortener.Services;
 using Shortener.Validator;
 
@@ -12,6 +13,10 @@ builder.Services.AddScoped<IShortenService, ShortenService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<ShortenUrlValidator>();
 builder.Services.AddFluentValidationAutoValidation();
+
+
+builder.Services.Configure<StaticDataOption>(
+    builder.Configuration.GetSection("StaticDataOption"));
 
 var app = builder.Build();
 

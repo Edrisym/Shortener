@@ -7,7 +7,7 @@ public class ShortenUrlValidator : AbstractValidator<ShortenUrl>
 {
     public ShortenUrlValidator()
     {
-        RuleFor(x => x.Url)
+        RuleFor(x => x.LongUrl)
             .NotEmpty().WithMessage("URL cannot be empty.")
             .Must(IsValidUrl).WithMessage("Invalid URL format.");
     }

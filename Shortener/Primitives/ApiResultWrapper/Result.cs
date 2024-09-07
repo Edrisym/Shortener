@@ -54,5 +54,4 @@ public class Result
 
     public static implicit operator Result(Error[] errors)
         => Failure(errors);
-
 }

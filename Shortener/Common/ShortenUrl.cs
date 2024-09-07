@@ -1,3 +1,3 @@
 namespace Shortener.Common;
 
-public record ShortenUrl(string Url);
+public record ShortenUrl(string LongUrl);

@@ -7,5 +7,6 @@ public class Message
         ArgumentException.ThrowIfNullOrEmpty(text, nameof(text));
         Text = text;
     }
+
     public string Text { get; private set; }
 }
