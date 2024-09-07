@@ -2,8 +2,8 @@ namespace Shortener.Services;
 
 public class ShortenService : IShortenService
 {
-    public string MakeShortenUrl(string url)
+    public async Task<string> MakeShortenUrl(string url, CancellationToken cancellationToken)
     {
-        return "12vhs";
+        return "a1jh3";
     }
 }

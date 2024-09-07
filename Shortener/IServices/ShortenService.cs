@@ -2,5 +2,5 @@ namespace Shortener.Services;
 
 public interface IShortenService
 {
-    string MakeShortenUrl(string url);
+    Task<string> MakeShortenUrl(string url, CancellationToken cancellationToken);
 }

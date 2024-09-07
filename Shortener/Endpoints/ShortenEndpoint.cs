@@ -12,21 +12,23 @@ public static class ShortenerEndpoint
         app.MapPost("/shorten",
                 async ([FromBody] ShortenUrl request,
                     IShortenService shortenService,
-                    IValidator<ShortenUrl> validator) =>
+                    IValidator<ShortenUrl> validator,
+                    CancellationToken cancellationToken) =>
                 {
-                    var results = await validator.ValidateAsync(request);
+                    var results = await validator.ValidateAsync(request, cancellationToken);
 
                     if (!results.IsValid)
                     {
                         return Results.ValidationProblem(results.ToDictionary());
                     }
 
-                    var result = shortenService.MakeShortenUrl(request.Url);
+                    var result = await shortenService.MakeShortenUrl(request.Url, cancellationToken);
                     return Results.Ok(new { ShortenedUrl = result });
                 })
             .WithName("Shorten your URL")
-            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status200OK, typeof(object))
-            .ProducesValidationProblem();
+            .ProducesValidationProblem()
+            .WithOpenApi();
     }
 }
