@@ -1,25 +1,34 @@
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
-using Microsoft.AspNetCore.Http.HttpResults;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shortener.Common;
-using Shortener.Primitives.ApiResultWrapper;
-using static Shortener.Primitives.ApiResultWrapper.Result;
+using Shortener.Services;
 
 namespace Shortener.Endpoints;
 
 public static class ShortenerEndpoint
 {
-    public static void ShortenEndpoints(this IEndpointRouteBuilder app)
+    public static void MapShortenEndpoint(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/v1");
+        app.MapPost("/shorten",
+                async ([FromBody] ShortenUrl request,
+                    IShortenService shortenService,
+                    IValidator<ShortenUrl> validator,
+                    CancellationToken cancellationToken) =>
+                {
+                    var results = await validator.ValidateAsync(request, cancellationToken);
 
-        //TODO
+                    if (!results.IsValid)
+                    {
+                        return Results.ValidationProblem(results.ToDictionary());
+                    }
 
-        group.MapPost("/shorten", async Task<Results<Ok<Result>,
-                BadRequest<Result>>>
-            ([FromBody] ShortenUrl request) =>
-        {
-            return TypedResults.Ok(new Result(true, "", []));
-        });
+                    var result = await shortenService.MakeShortenUrl(request.Url, cancellationToken);
+                    return Results.Ok(new { ShortenedUrl = result });
+                })
+            .WithName("Shorten your URL")
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status200OK, typeof(object))
+            .ProducesValidationProblem()
+            .WithOpenApi();
     }
 }
