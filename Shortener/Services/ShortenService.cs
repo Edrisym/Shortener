@@ -25,10 +25,9 @@ public class ShortenService : IShortenService
         var sixth = string.Empty;
         for (var i = 0; i < hashCode.Length; i += 5)
         {
-            sixth = new string(
-                (i + _options.HashParts <= hashCode.Length
-                    ? hashCode[i..(i + _options.HashParts)].AsParallel()
-                    : hashCode[i..].AsParallel()).ToArray());
+            sixth = i + _options.HashParts <= hashCode.Length
+                ? hashCode[i..(i + _options.HashParts)]
+                : hashCode[i..];
 
             Console.WriteLine(sixth);
         }
