@@ -1,8 +1,3 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Shortener.Common;
-using Shortener.Services;
-
 namespace Shortener.Endpoints;
 
 public static class ShortenerEndpoint
@@ -22,7 +17,7 @@ public static class ShortenerEndpoint
                         return Results.ValidationProblem(results.ToDictionary());
                     }
 
-                    var result = await shortenService.MakeShortenUrl(request.Url, cancellationToken);
+                    var result = shortenService.MakeShortenUrl(request.LongUrl, cancellationToken);
                     return Results.Ok(new { ShortenedUrl = result });
                 })
             .WithName("Shorten your URL")

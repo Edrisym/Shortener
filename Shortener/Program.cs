@@ -1,17 +1,18 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Shortener.Endpoints;
-using Shortener.Services;
-using Shortener.Validator;
+using Shortener.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddServices();
+builder.Services.AddFluentApiValidation();
+builder.Services.AddMongoDatabase(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IShortenService, ShortenService>();
 
-builder.Services.AddValidatorsFromAssemblyContaining<ShortenUrlValidator>();
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.Configure<StaticDataOption>(
+    builder.Configuration.GetSection("StaticDataOption"));
 
 var app = builder.Build();
 

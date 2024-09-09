@@ -1,4 +1,3 @@
-using Shortener.Common;
 using Shortener.Primitives.Response;
 
 namespace Shortener.Primitives.ApiResultWrapper;
