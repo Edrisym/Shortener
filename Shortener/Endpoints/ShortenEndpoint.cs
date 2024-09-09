@@ -22,7 +22,7 @@ public static class ShortenerEndpoint
                         return Results.ValidationProblem(results.ToDictionary());
                     }
 
-                    var result = await shortenService.MakeShortenUrl(request.LongUrl, cancellationToken);
+                    var result = shortenService.MakeShortenUrl(request.LongUrl, cancellationToken);
                     return Results.Ok(new { ShortenedUrl = result });
                 })
             .WithName("Shorten your URL")

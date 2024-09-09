@@ -4,41 +4,45 @@ using Shortener.Models;
 
 namespace Shortener.Services;
 
-public class ShortenService : IShortenService
+public class ShortenService(IOptions<StaticDataOption> options) : IShortenService
 {
-    private readonly StaticDataOption _options;
+    private readonly StaticDataOption _options = options.Value;
 
-    public ShortenService(IOptions<StaticDataOption> options)
+    public string MakeShortenUrl(string longUrl, CancellationToken cancellationToken)
     {
-        _options = options.Value;
-    }
-
-    public async Task<string> MakeShortenUrl(string longUrl, CancellationToken cancellationToken)
-    {
-        var hashCode = GenerateHashing(longUrl);
-        var sixths = TakeHashPart(hashCode);
+        var hashCode = GenerateHashing(ref longUrl);
+        var sixths = TakeHashPart(ref hashCode);
         return sixths;
     }
 
-    private string TakeHashPart(string hashCode)
+    private string TakeHashPart(ref string hashCode)
     {
-        var sixth = string.Empty;
-        for (var i = 0; i < hashCode.Length; i += 5)
+        var segments = new List<string>();
+
+        for (var i = 0; i < hashCode.Length; i += 10)
         {
-            sixth = i + _options.HashParts <= hashCode.Length
+            var sixth = i + _options.HashParts <= hashCode.Length
                 ? hashCode[i..(i + _options.HashParts)]
                 : hashCode[i..];
 
-            Console.WriteLine(sixth);
+            segments.Add(sixth);
         }
 
-        return sixth;
+        var hash = new List<char>();
+
+        foreach (var item in segments.Where(x => x.Length > 5))
+        {
+            var firstLetter = item[0];
+            hash.Add(firstLetter);
+        }
+
+        var output = string.Join(string.Empty, hash);
+        return output;
     }
 
-    private string GenerateHashing(string longUrl)
+    private string GenerateHashing(ref string longUrl)
     {
-        var pbText = Encoding.Default.GetBytes(longUrl);
-        var hash = Blake3.Hasher.Hash(pbText);
-        return hash.ToString();
+        var bytes = Encoding.UTF8.GetBytes(longUrl);
+        return Base64UrlEncoder.Encoder.Encode(bytes);
     }
 }
