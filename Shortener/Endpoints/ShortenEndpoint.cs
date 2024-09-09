@@ -1,8 +1,3 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Shortener.Common;
-using Shortener.Services;
-
 namespace Shortener.Endpoints;
 
 public static class ShortenerEndpoint

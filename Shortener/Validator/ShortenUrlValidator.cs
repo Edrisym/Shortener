@@ -1,6 +1,3 @@
-using FluentValidation;
-using Shortener.Common;
-
 namespace Shortener.Validator;
 
 public class ShortenUrlValidator : AbstractValidator<ShortenUrl>

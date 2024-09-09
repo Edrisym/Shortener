@@ -1,10 +1,6 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Shortener.Endpoints;
 using Shortener.Extensions;
-using Shortener.Models;
-using Shortener.Services;
-using Shortener.Validator;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

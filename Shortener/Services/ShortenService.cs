@@ -1,6 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Options;
-using Shortener.Models;
+using Shortener.IServices;
 
 namespace Shortener.Services;
 

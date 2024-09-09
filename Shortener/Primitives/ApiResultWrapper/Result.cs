@@ -1,12 +1,10 @@
-using Shortener.Common;
 using Shortener.Primitives.Response;
 
 namespace Shortener.Primitives.ApiResultWrapper;
 
 public class Result
 {
-    public Result(bool isSuccess,
-        string message, Error[] errors)
+    public Result(bool isSuccess, string message, Error[] errors)
     {
         // ValidateInput(isSuccess, message, errors);
         IsSuccess = isSuccess;
