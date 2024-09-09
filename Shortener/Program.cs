@@ -4,10 +4,12 @@ using Shortener.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddServices();
 builder.Services.AddFluentApiValidation();
+builder.Services.AddMongoDatabase(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<StaticDataOption>(
     builder.Configuration.GetSection("StaticDataOption"));
