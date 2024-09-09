@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Shortener.Endpoints;
+using Shortener.Extensions;
 using Shortener.Models;
 using Shortener.Services;
 using Shortener.Validator;
@@ -9,11 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IShortenService, ShortenService>();
-
-builder.Services.AddValidatorsFromAssemblyContaining<ShortenUrlValidator>();
-builder.Services.AddFluentValidationAutoValidation();
-
+builder.Services.AddServices();
+builder.Services.AddFluentApiValidation();
 
 builder.Services.Configure<StaticDataOption>(
     builder.Configuration.GetSection("StaticDataOption"));
