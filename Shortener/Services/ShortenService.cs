@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 
@@ -11,14 +12,13 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     {
         var shortCode = GenerateHashing(originalUrl);
 
-        var urls = new ShortUrls
+        var urls = new ShortUrl
         {
             CreatedAt = DateTime.UtcNow,
             OriginalUrl = originalUrl,
             ShortCode = shortCode
         };
-
-        await dbContext.ShortUrls.AddAsync(urls, cancellationToken);
+        await dbContext.ShortUrl.AddAsync(urls, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return $"{options.Value.BaseUrl}{shortCode}";

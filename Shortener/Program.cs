@@ -1,5 +1,5 @@
 using Shortener.Endpoints;
-using Shortener.Extensions;
+using Shortener.WebApplicationExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

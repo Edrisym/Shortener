@@ -6,7 +6,7 @@ namespace Shortener.Persistence;
 
 public class ShortenerDbContext : DbContext
 {
-    public DbSet<ShortUrls> ShortUrls { get; set; }
+    public DbSet<ShortUrl> ShortUrl { get; set; }
 
     public ShortenerDbContext(DbContextOptions dbContextOptions)
         : base(dbContextOptions)
@@ -17,6 +17,10 @@ public class ShortenerDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ShortUrls>().ToCollection("shortUrls");
+        modelBuilder.Entity<ShortUrl>()
+            .ToCollection("shortUrl");
+        // .HasIndex(x => x.ShortCode)
+        // .IsUnique()
+        // .IsDescending(true);
     }
 }

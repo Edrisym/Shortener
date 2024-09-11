@@ -1,10 +1,9 @@
-using System.Security.Authentication;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 
-namespace Shortener.Extensions;
+namespace Shortener.WebApplicationExtensions;
 
 public static class WebApplicationExtensions
 {
@@ -23,7 +22,7 @@ public static class WebApplicationExtensions
     {
         serviceCollection.AddScoped<IShortenService, ShortenService>();
     }
-    
+
     public static void ConfigureDbContext(this WebApplicationBuilder builder)
     {
         var settings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
@@ -32,7 +31,18 @@ public static class WebApplicationExtensions
             if (settings is null)
                 throw new ArgumentNullException(nameof(settings));
 
-            options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
+            var client = new MongoClient(settings.ConnectionString);
+            var db = client.GetDatabase("edrisym_shortener");
+            var shortUrls = db.GetCollection<ShortUrl>("shortUrl");
+
+            var field = new StringFieldDefinition<ShortUrl>("ShortCode");
+            var indexDefinition = new IndexKeysDefinitionBuilder<ShortUrl>()
+                .Ascending(field);
+
+            var opt = new CreateIndexOptions { Unique = true };
+            shortUrls.Indexes.CreateOne(indexDefinition, opt);
+
+            options.UseMongoDB(client, settings.DatabaseName);
         });
     }
 }
