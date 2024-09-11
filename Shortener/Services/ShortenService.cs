@@ -1,38 +1,48 @@
 using System.Text;
 using Microsoft.Extensions.Options;
-using Shortener.IServices;
+using Shortener.Common.Models;
 
 namespace Shortener.Services;
 
-public class ShortenService(IOptions<StaticDataOption> options) : IShortenService
+public class ShortenService(IOptions<AppSettings> options) : IShortenService
 {
-    private readonly StaticDataOption _options = options.Value;
-
     public string MakeShortenUrl(string longUrl, CancellationToken cancellationToken)
     {
-        var hashCode = GenerateHashing(ref longUrl);
-        var sixths = TakeHashPart(ref hashCode);
-        return sixths;
+        var hashCode = GenerateHashing(longUrl);
+
+        return SegmentHashCode(hashCode, out var segments)
+            ? ExtractHashFromSegments(segments)
+            : string.Empty;
     }
 
-    private string TakeHashPart(ref string hashCode)
+    private bool SegmentHashCode(string hashCode, out List<string> segments)
     {
-        var segments = new List<string>();
+        segments = new List<string>();
+
+        if (string.IsNullOrEmpty(hashCode))
+        {
+            return false;
+        }
 
         for (var i = 0; i < hashCode.Length; i += 10)
         {
-            var sixth = i + _options.HashParts <= hashCode.Length
-                ? hashCode[i..(i + _options.HashParts)]
+            var segment = i + options.Value.HashParts <= hashCode.Length
+                ? hashCode[i..(i + options.Value.HashParts)]
                 : hashCode[i..];
 
-            segments.Add(sixth);
+            segments.Add(segment);
         }
 
+        return true;
+    }
+
+    private string ExtractHashFromSegments(List<string> segments)
+    {
         var hash = new List<char>();
 
-        foreach (var item in segments.Where(x => x.Length > 5))
+        foreach (var segment in segments.Where(x => x.Length > 5))
         {
-            var firstLetter = item[0];
+            var firstLetter = segment[0];
             hash.Add(firstLetter);
         }
 
@@ -40,7 +50,8 @@ public class ShortenService(IOptions<StaticDataOption> options) : IShortenServic
         return output;
     }
 
-    private string GenerateHashing(ref string longUrl)
+
+    private string GenerateHashing(string longUrl)
     {
         var bytes = Encoding.UTF8.GetBytes(longUrl);
         return Base64UrlEncoder.Encoder.Encode(bytes);
