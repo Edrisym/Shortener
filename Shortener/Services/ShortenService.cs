@@ -1,38 +1,66 @@
 using System.Text;
 using Microsoft.Extensions.Options;
-using Shortener.IServices;
+using MongoDB.Driver;
+using Shortener.Common.Models;
+using Shortener.Persistence;
 
 namespace Shortener.Services;
 
-public class ShortenService(IOptions<StaticDataOption> options) : IShortenService
+public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
 {
-    private readonly StaticDataOption _options = options.Value;
-
-    public string MakeShortenUrl(string longUrl, CancellationToken cancellationToken)
+    public async Task<string> MakeShortenUrl(string originalUrl, CancellationToken cancellationToken)
     {
-        var hashCode = GenerateHashing(ref longUrl);
-        var sixths = TakeHashPart(ref hashCode);
-        return sixths;
+        var shortCode = GenerateHashing(originalUrl);
+        try
+        {
+            var urls = new ShortUrl
+            {
+                CreatedAt = DateTime.UtcNow,
+                OriginalUrl = originalUrl,
+                ShortCode = shortCode
+            };
+            await dbContext.ShortUrl.AddAsync(urls, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            if (e.Message.Contains("Duplicate"))
+            {
+                // TODO -- Think more
+            }
+        }
+
+        return $"{options.Value.BaseUrl}{shortCode}";
     }
 
-    private string TakeHashPart(ref string hashCode)
+    private bool SegmentHashCode(string hashCode, out List<string> segments)
     {
-        var segments = new List<string>();
+        segments = [];
+
+        if (string.IsNullOrEmpty(hashCode))
+        {
+            return false;
+        }
 
         for (var i = 0; i < hashCode.Length; i += 10)
         {
-            var sixth = i + _options.HashParts <= hashCode.Length
-                ? hashCode[i..(i + _options.HashParts)]
+            var segment = i + options.Value.HashParts <= hashCode.Length
+                ? hashCode[i..(i + options.Value.HashParts)]
                 : hashCode[i..];
 
-            segments.Add(sixth);
+            segments.Add(segment);
         }
 
+        return true;
+    }
+
+    private string ExtractHashFromSegments(IEnumerable<string> segments)
+    {
         var hash = new List<char>();
 
-        foreach (var item in segments.Where(x => x.Length > 5))
+        foreach (var segment in segments.Where(x => x.Length > 5))
         {
-            var firstLetter = item[0];
+            var firstLetter = segment[0];
             hash.Add(firstLetter);
         }
 
@@ -40,9 +68,16 @@ public class ShortenService(IOptions<StaticDataOption> options) : IShortenServic
         return output;
     }
 
-    private string GenerateHashing(ref string longUrl)
+    private string GenerateHashing(string longUrl)
     {
         var bytes = Encoding.UTF8.GetBytes(longUrl);
-        return Base64UrlEncoder.Encoder.Encode(bytes);
+        var hashCode = Base64UrlEncoder.Encoder.Encode(bytes);
+        
+        // TODO -- generates longer hashes the longer the urls get
+        // fix this bug
+        
+        return SegmentHashCode(hashCode, out var segments)
+            ? ExtractHashFromSegments(segments)
+            : string.Empty;
     }
 }
