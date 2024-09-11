@@ -72,7 +72,10 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     {
         var bytes = Encoding.UTF8.GetBytes(longUrl);
         var hashCode = Base64UrlEncoder.Encoder.Encode(bytes);
-
+        
+        // TODO -- generates longer hashes the longer the urls get
+        // fix this bug
+        
         return SegmentHashCode(hashCode, out var segments)
             ? ExtractHashFromSegments(segments)
             : string.Empty;
