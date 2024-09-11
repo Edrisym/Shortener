@@ -11,15 +11,24 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     public async Task<string> MakeShortenUrl(string originalUrl, CancellationToken cancellationToken)
     {
         var shortCode = GenerateHashing(originalUrl);
-
-        var urls = new ShortUrl
+        try
         {
-            CreatedAt = DateTime.UtcNow,
-            OriginalUrl = originalUrl,
-            ShortCode = shortCode
-        };
-        await dbContext.ShortUrl.AddAsync(urls, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+            var urls = new ShortUrl
+            {
+                CreatedAt = DateTime.UtcNow,
+                OriginalUrl = originalUrl,
+                ShortCode = shortCode
+            };
+            await dbContext.ShortUrl.AddAsync(urls, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            if (e.Message.Contains("Duplicate"))
+            {
+                // TODO -- Think more
+            }
+        }
 
         return $"{options.Value.BaseUrl}{shortCode}";
     }
