@@ -3,6 +3,7 @@ using Shortener.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureAppSettings();
 builder.ConfigureDbContext();
 builder.Services.AddServices();
 builder.Services.AddFluentApiValidation();
@@ -10,7 +11,6 @@ builder.Services.AddFluentApiValidation();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.ConfigureAppSetting(builder.Configuration);
 
 
 

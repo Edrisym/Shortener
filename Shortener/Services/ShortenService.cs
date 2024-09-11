@@ -1,23 +1,32 @@
 using System.Text;
 using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
+using Shortener.Persistence;
 
 namespace Shortener.Services;
 
-public class ShortenService(IOptions<AppSettings> options) : IShortenService
+public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
 {
-    public string MakeShortenUrl(string longUrl, CancellationToken cancellationToken)
+    public async Task<string> MakeShortenUrl(string originalUrl, CancellationToken cancellationToken)
     {
-        var hashCode = GenerateHashing(longUrl);
+        var shortCode = GenerateHashing(originalUrl);
 
-        return SegmentHashCode(hashCode, out var segments)
-            ? ExtractHashFromSegments(segments)
-            : string.Empty;
+        var urls = new ShortUrls
+        {
+            CreatedAt = DateTime.UtcNow,
+            OriginalUrl = originalUrl,
+            ShortCode = shortCode
+        };
+
+        await dbContext.ShortUrls.AddAsync(urls, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return $"{options.Value.BaseUrl}{shortCode}";
     }
 
     private bool SegmentHashCode(string hashCode, out List<string> segments)
     {
-        segments = new List<string>();
+        segments = [];
 
         if (string.IsNullOrEmpty(hashCode))
         {
@@ -36,7 +45,7 @@ public class ShortenService(IOptions<AppSettings> options) : IShortenService
         return true;
     }
 
-    private string ExtractHashFromSegments(List<string> segments)
+    private string ExtractHashFromSegments(IEnumerable<string> segments)
     {
         var hash = new List<char>();
 
@@ -50,10 +59,13 @@ public class ShortenService(IOptions<AppSettings> options) : IShortenService
         return output;
     }
 
-
     private string GenerateHashing(string longUrl)
     {
         var bytes = Encoding.UTF8.GetBytes(longUrl);
-        return Base64UrlEncoder.Encoder.Encode(bytes);
+        var hashCode = Base64UrlEncoder.Encoder.Encode(bytes);
+
+        return SegmentHashCode(hashCode, out var segments)
+            ? ExtractHashFromSegments(segments)
+            : string.Empty;
     }
 }
