@@ -1,6 +1,6 @@
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 
@@ -24,7 +24,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
         }
         catch (Exception e)
         {
-            if (e.Message.Contains("Duplicate"))
+            if (e.Message.Contains("DuplicateKey"))
             {
                 // TODO -- Think more
             }
@@ -70,12 +70,12 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
     private string GenerateHashing(string longUrl)
     {
-        var bytes = Encoding.UTF8.GetBytes(longUrl);
-        var hashCode = Base64UrlEncoder.Encoder.Encode(bytes);
-        
-        // TODO -- generates longer hashes the longer the urls get
-        // fix this bug
-        
+        var hash = MD5.HashData(Encoding.UTF8.GetBytes(longUrl));
+
+        var hashCode = BitConverter
+            .ToString(hash)
+            .Replace("-", String.Empty);
+
         return SegmentHashCode(hashCode, out var segments)
             ? ExtractHashFromSegments(segments)
             : string.Empty;
