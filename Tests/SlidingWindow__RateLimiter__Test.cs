@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 
-public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFactory<Programs>>
+public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 

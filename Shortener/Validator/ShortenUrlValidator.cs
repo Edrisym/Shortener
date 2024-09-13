@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Shortener.Validator;
 
 public class ShortenUrlValidator : AbstractValidator<ShortenUrl>
@@ -11,6 +13,7 @@ public class ShortenUrlValidator : AbstractValidator<ShortenUrl>
 
     private bool IsValidUrl(string url)
     {
-        return Uri.TryCreate(url, UriKind.Absolute, out _);
+        var urlPattern = @"^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$";
+        return Regex.IsMatch(url, urlPattern);
     }
 }
