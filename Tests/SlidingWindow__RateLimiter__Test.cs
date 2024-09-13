@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Json;
-using Shortener;
-using Xunit;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
-public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFactory<Program>>
+public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFactory<Programs>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
