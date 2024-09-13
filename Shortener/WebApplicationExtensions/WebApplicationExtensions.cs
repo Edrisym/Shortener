@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Shortener.Common.Models;
 using Shortener.Persistence;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+
 
 namespace Shortener.WebApplicationExtensions;
 
@@ -44,5 +47,22 @@ public static class WebApplicationExtensions
 
             options.UseMongoDB(client, settings.DatabaseName);
         });
+    }
+
+    public static void AddRateLimiting(this WebApplicationBuilder builder)
+    {
+        var myOptions = new MyRateLimitOptions();
+        builder.Configuration.GetSection(MyRateLimitOptions.MyRateLimit).Bind(myOptions);
+        var slidingPolicy = "sliding";
+
+        builder.Services.AddRateLimiter(_ => _
+            .AddSlidingWindowLimiter(policyName: slidingPolicy, options =>
+            {
+                options.PermitLimit = myOptions.PermitLimit;
+                options.Window = TimeSpan.FromSeconds(myOptions.Window);
+                options.SegmentsPerWindow = myOptions.SegmentsPerWindow;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.QueueLimit = myOptions.QueueLimit;
+            }));
     }
 }
