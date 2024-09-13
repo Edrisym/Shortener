@@ -24,7 +24,7 @@ public static class ShortenerEndpoint
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status200OK, typeof(object))
             .ProducesValidationProblem()
-            .RequireRateLimiting("limiter")
+            .RequireRateLimiting("sliding")
             .WithOpenApi();
     }
 }

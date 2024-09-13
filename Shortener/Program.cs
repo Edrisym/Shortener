@@ -1,6 +1,7 @@
-using SharpCompress.Compressors.Xz;
 using Shortener.Endpoints;
 using Shortener.WebApplicationExtensions;
+
+namespace Shortener;
 
 public class Program
 {
@@ -28,8 +29,7 @@ public class Program
         app.MapShortenEndpoint();
         app.UseHttpsRedirection();
 
-        app.MapGet("/test", () => Results.Ok("Rate Limiter Test"));
-
+        app.UseRateLimiter();
 
         app.Run();
     }
