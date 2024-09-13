@@ -64,8 +64,8 @@ public static class WebApplicationExtensions
                 options.PermitLimit = myOptions!.PermitLimit;
                 options.Window = TimeSpan.FromSeconds(myOptions.Window);
                 options.SegmentsPerWindow = myOptions.SegmentsPerWindow;
-                // options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                // options.QueueLimit = myOptions.QueueLimit;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.QueueLimit = myOptions.QueueLimit;
             });
         });
     }
