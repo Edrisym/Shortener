@@ -34,19 +34,7 @@ public static class WebApplicationExtensions
         {
             if (settings is null)
                 throw new ArgumentNullException(nameof(settings));
-
-            var client = new MongoClient(settings.ConnectionString);
-            var db = client.GetDatabase("edrisym_shortener");
-            var shortUrls = db.GetCollection<ShortUrl>("shortUrl");
-
-            var field = new StringFieldDefinition<ShortUrl>("ShortCode");
-            var indexDefinition = new IndexKeysDefinitionBuilder<ShortUrl>()
-                .Ascending(field);
-
-            var opt = new CreateIndexOptions { Unique = true };
-            shortUrls.Indexes.CreateOne(indexDefinition, opt);
-
-            options.UseMongoDB(client, settings.DatabaseName);
+            options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
         });
     }
 
@@ -64,8 +52,8 @@ public static class WebApplicationExtensions
                 options.PermitLimit = myOptions!.PermitLimit;
                 options.Window = TimeSpan.FromSeconds(myOptions.Window);
                 options.SegmentsPerWindow = myOptions.SegmentsPerWindow;
-                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = myOptions.QueueLimit;
+                // options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                // options.QueueLimit = myOptions.QueueLimit;
             });
         });
     }
