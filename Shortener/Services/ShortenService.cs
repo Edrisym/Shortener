@@ -13,6 +13,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     {
         var shortCode = GenerateHashing(originalUrl);
 
+        //TODO -- wth what is this
         if (CheckDuplicate(shortCode))
         {
             return $"{options.Value.BaseUrl}{shortCode}";
