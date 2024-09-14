@@ -17,11 +17,12 @@ public static class ShortenerEndpoint
                         return Results.ValidationProblem(results.ToDictionary());
                     }
 
-                    var result = await shortenService.MakeShortenUrl(request.LongUrl, cancellationToken);
+                    var result = await shortenService.MakeShortUrl(request.LongUrl, cancellationToken);
                     return Results.Ok(new { ShortenedUrl = result });
                 })
             .WithName("Shorten your URL")
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status429TooManyRequests)
             .Produces(StatusCodes.Status200OK, typeof(object))
             .ProducesValidationProblem()
             .RequireRateLimiting("sliding")
