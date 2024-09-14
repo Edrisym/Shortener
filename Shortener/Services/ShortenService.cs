@@ -53,13 +53,11 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
     private string ExtractHashFromSegments(IEnumerable<string> segments)
     {
-        string shortCode;
         var index = 0;
-
         var hash = segments
-            .Where(segment => segment.Length >= 5)
+            .Where(segment => segment.Length >= 4)
             .Select(segment => segment[index]);
-        shortCode = string.Join(string.Empty, hash);
+        var shortCode = string.Join(string.Empty, hash);
 
         return shortCode;
     }
@@ -73,9 +71,9 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     private string GenerateHashing(string longUrl)
     {
         var hash = MD5.HashData(Encoding.UTF8.GetBytes(longUrl));
-        var hashCode = BitConverter
-            .ToString(hash)
-            .Replace("-", String.Empty);
+        var hashCode = Convert.ToBase64String(hash)
+            .Replace(oldValue: "=", newValue: "");
+
 
         return SegmentHashCode(hashCode, out var segments)
             ? ExtractHashFromSegments(segments)
