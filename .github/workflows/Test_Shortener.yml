@@ -2,15 +2,15 @@
 name: Test Shortener
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_run:
+    workflows: ["Build Shortener"]
+    types:
+      - completed
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
     - uses: actions/checkout@v4
