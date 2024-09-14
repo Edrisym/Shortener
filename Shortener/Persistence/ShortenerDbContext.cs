@@ -15,12 +15,12 @@ public class ShortenerDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<ShortUrl>()
             .ToCollection("shortUrl");
-        // .HasIndex(x => x.ShortCode)
-        // .IsUnique()
-        // .IsDescending(true);
+
+        modelBuilder.Entity<ShortUrl>()
+            .HasIndex(x => x.ShortCode)
+            .IsUnique()
+            .IsDescending();
     }
 }

@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
@@ -9,23 +9,32 @@ namespace Shortener.Services;
 
 public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
 {
-    public async Task<string> MakeShortenUrl(string originalUrl, CancellationToken cancellationToken)
+    public async Task<string> MakeShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
         var shortCode = GenerateHashing(originalUrl);
 
-        if (CheckDuplicate(shortCode))
+        if (CheckDuplicateLongUrl(shortCode, originalUrl))
         {
             return $"{options.Value.BaseUrl}{shortCode}";
         }
 
-        var urls = new ShortUrl
+        var urlEntity = new ShortUrl
         {
             CreatedAt = DateTime.UtcNow,
             OriginalUrl = originalUrl,
             ShortCode = shortCode
         };
-        await dbContext.ShortUrl.AddAsync(urls, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await dbContext.ShortUrl.AddAsync(urlEntity, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            // TODO make a Result pattern
+            throw new Exception("Error saving to database", ex);
+        }
 
         return $"{options.Value.BaseUrl}{shortCode}";
     }
@@ -39,11 +48,11 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             return false;
         }
 
-        for (var i = 0; i < hashCode.Length; i += 5)
+        for (var i = 0; i < hashCode.Length; i += 7)
         {
             var segment = i + options.Value.HashParts <= hashCode.Length
-                ? hashCode[i..(i + options.Value.HashParts)]
-                : hashCode[i..];
+                ? hashCode.Substring(i, options.Value.HashParts)
+                : hashCode.Substring(i);
 
             segments.Add(segment);
         }
@@ -51,33 +60,32 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
         return true;
     }
 
-    private string ExtractHashFromSegments(IEnumerable<string> segments)
+    public string ExtractHashFromSegments(IEnumerable<string> segments)
     {
-        string shortCode;
-        var index = 0;
-
+        var zero = 0;
         var hash = segments
-            .Where(segment => segment.Length >= 5)
-            .Select(segment => segment[index]);
-        shortCode = string.Join(string.Empty, hash);
+            .Where(segment => segment.Length > zero)
+            .Select(segment => segment[zero]);
+        var shortCode = string.Join(string.Empty, hash);
 
         return shortCode;
     }
-
-
-    private bool CheckDuplicate(string shortCode)
+    
+    public bool CheckDuplicateLongUrl(string shortCode, string originalUrl)
     {
-        return dbContext.ShortUrl.Any(url => url.ShortCode == shortCode);
+        return dbContext.ShortUrl
+            .Any(url => url.ShortCode == shortCode
+                        && url.OriginalUrl == originalUrl);
     }
 
-    private string GenerateHashing(string longUrl)
+    public string GenerateHashing(string longUrl)
     {
-        var hash = MD5.HashData(Encoding.UTF8.GetBytes(longUrl));
-        var hashCode = BitConverter
-            .ToString(hash)
-            .Replace("-", String.Empty);
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(longUrl));
+        var base64Hash = Convert.ToBase64String(hashBytes);
 
-        return SegmentHashCode(hashCode, out var segments)
+        var cleanedHash = Regex.Replace(base64Hash, "[+/=]", string.Empty);
+
+        return SegmentHashCode(cleanedHash, out var segments)
             ? ExtractHashFromSegments(segments)
             : string.Empty;
     }
