@@ -5,3 +5,5 @@ global using Shortener.Validator;
 global using Shortener.Common;
 global using Microsoft.AspNetCore.Mvc;
 global using Shortener.IServices;
+global using Shortener.Endpoints;
+global using Shortener.WebApplicationExtensions;

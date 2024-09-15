@@ -62,7 +62,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
     public string ExtractHashFromSegments(IEnumerable<string> segments)
     {
-        var zero = 0;
+        const int zero = 0;
         var hash = segments
             .Where(segment => segment.Length > zero)
             .Select(segment => segment[zero]);
@@ -70,7 +70,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
         return shortCode;
     }
-    
+
     public bool CheckDuplicateLongUrl(string shortCode, string originalUrl)
     {
         return dbContext.ShortUrl
@@ -90,3 +90,6 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             : string.Empty;
     }
 }
+
+
+

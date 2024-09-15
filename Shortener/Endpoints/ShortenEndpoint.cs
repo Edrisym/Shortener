@@ -18,7 +18,7 @@ public static class ShortenerEndpoint
                     }
 
                     var result = await shortenService.MakeShortUrl(request.LongUrl, cancellationToken);
-                    return Results.Ok(new { ShortenedUrl = result });
+                    return Results.Ok(new ShortenUrl(result));
                 })
             .WithName("Shorten your URL")
             .ProducesProblem(StatusCodes.Status400BadRequest)

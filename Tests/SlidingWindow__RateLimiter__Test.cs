@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Shortener.Common;
 
 public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -18,7 +18,7 @@ public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFact
         // Arrange
         var client = _factory.CreateClient();
 
-        var requestBody = new { LongUrl = "https://example.com" };
+        var requestBody = new ShortenUrl("https://example.com");
 
         var tasks = new List<Task<HttpResponseMessage>>();
         for (int i = 0; i < 10; i++)
@@ -35,7 +35,7 @@ public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFact
     public async Task Shortener_RateLimiter_ThrottlesRequestsOverLimit()
     {
         var client = _factory.CreateClient();
-        var requestBody = new { LongUrl = "https://example.com" };
+        var requestBody = new ShortenUrl("https://example.com");
 
         var tasks = new List<Task<HttpResponseMessage>>();
         for (int i = 0; i < 12; i++)
@@ -56,7 +56,7 @@ public class SlidingWindow__RateLimiter__Test : IClassFixture<WebApplicationFact
     public async Task Shortener_RateLimiter_AllowsRequestsAfterWindowSlides()
     {
         var client = _factory.CreateClient();
-        var requestBody = new { LongUrl = "https://example.com" };
+        var requestBody = new ShortenUrl("https://example.com");
 
         var tasks = new List<Task<HttpResponseMessage>>();
         for (int i = 0; i < 10; i++)
