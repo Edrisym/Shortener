@@ -1,13 +1,17 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 
 namespace Shortener.Services;
 
-public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
+public class ShortenService(
+    IOptions<AppSettings> options,
+    ShortenerDbContext dbContext,
+    ILogger<ShortUrl> logger) : IShortenService
 {
     public async Task<string> MakeShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
@@ -15,6 +19,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
         if (CheckDuplicateLongUrl(shortCode, originalUrl))
         {
+            logger.LogWarning($"User requested a existing url => Url = {originalUrl} shortCode = {shortCode}");
             return $"{options.Value.BaseUrl}{shortCode}";
         }
 
@@ -32,6 +37,8 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
         }
         catch (Exception ex)
         {
+            logger.LogError($"Database Error on shortening service while saving short code => {shortCode}");
+
             // TODO make a Result pattern
             throw new Exception("Error saving to database", ex);
         }
@@ -70,7 +77,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
 
         return shortCode;
     }
-
+    
     public bool CheckDuplicateLongUrl(string shortCode, string originalUrl)
     {
         return dbContext.ShortUrl
@@ -90,6 +97,3 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             : string.Empty;
     }
 }
-
-
-
