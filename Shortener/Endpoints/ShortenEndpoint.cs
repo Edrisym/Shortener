@@ -8,16 +8,24 @@ public static class ShortenerEndpoint
                 async ([FromBody] ShortenUrl request,
                     IShortenService shortenService,
                     IValidator<ShortenUrl> validator,
-                    CancellationToken cancellationToken) =>
+                    ILogger<ShortenUrl> logger,
+                    CancellationToken cancellationToken,
+                    HttpContext context) =>
                 {
-                    var results = await validator.ValidateAsync(request, cancellationToken);
+                    
+                    var remoteIpAddress = context.Connection.RemoteIpAddress;
+                    logger.LogWarning($"User with Ip address requested a short url. => {remoteIpAddress}");
 
+                    var results = await validator.ValidateAsync(request, cancellationToken);
                     if (!results.IsValid)
                     {
+                        logger.LogWarning($"Shortening Failed. => {results}");
                         return Results.ValidationProblem(results.ToDictionary());
                     }
 
+
                     var result = await shortenService.MakeShortUrl(request.LongUrl, cancellationToken);
+                    logger.LogInformation($"Shortening the URL was successfully done. => {results}");
                     return Results.Ok(new ShortenUrl(result));
                 })
             .WithName("Shorten your URL")
