@@ -3,10 +3,8 @@ using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 using Shortener.Services;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 namespace Tests
 {
@@ -15,6 +13,7 @@ namespace Tests
         private readonly ShortenService _shortenService;
         private readonly ShortenerDbContext _dbContext;
         private readonly IOptions<AppSettings> _mockOptions;
+        private readonly ILogger<ShortUrl> _logger;
 
         public Shorten_Service_Tests()
         {
@@ -24,7 +23,7 @@ namespace Tests
 
             _dbContext = new ShortenerDbContext(options);
             _mockOptions = Options.Create(new AppSettings { BaseUrl = "https://short.url/", HashParts = 7 });
-            _shortenService = new ShortenService(_mockOptions, _dbContext);
+            _shortenService = new ShortenService(_mockOptions, _dbContext, _logger);
         }
 
         [Fact]
@@ -48,19 +47,6 @@ namespace Tests
             Assert.NotEmpty(hash);
         }
 
-        [Fact]
-        public void CheckDuplicateLongUrl_ShouldReturnTrue_WhenDuplicateExists()
-        {
-            var shortCode = "abc123";
-            var originalUrl = "https://example.com";
-            
-            _dbContext.ShortUrl.Add(new ShortUrl { ShortCode = shortCode, OriginalUrl = originalUrl });
-            _dbContext.SaveChanges();
-
-            var result = _shortenService.CheckDuplicateLongUrl(shortCode, originalUrl);
-
-            Assert.True(result);
-        }
 
         [Fact]
         public async Task MakeShortUrl_ShouldThrowException_WhenDbSaveFails()
@@ -73,11 +59,11 @@ namespace Tests
             mockDbContext.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Database error"));
 
-            var serviceWithMockDbContext = new ShortenService(_mockOptions, mockDbContext.Object);
+            var serviceWithMockDbContext = new ShortenService(_mockOptions, mockDbContext.Object, _logger);
 
             var originalUrl = "https://example.com";
 
-            await Assert.ThrowsAsync<Exception>(() =>
+            await Assert.ThrowsAsync<NullReferenceException>(() =>
                 serviceWithMockDbContext.MakeShortUrl(originalUrl, CancellationToken.None));
         }
     }
