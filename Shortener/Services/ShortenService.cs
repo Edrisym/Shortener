@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
@@ -69,10 +68,11 @@ public class ShortenService(
 
     public string ExtractHashFromSegments(IEnumerable<string> segments)
     {
-        const int zero = 0;
+        const int numberZero = 0;
+        const int numberSix = 5;
         var hash = segments
-            .Where(segment => segment.Length > zero)
-            .Select(segment => segment[zero]);
+            .Where(segment => segment.Length > numberSix)
+            .Select(segment => segment[numberZero]);
         var shortCode = string.Join(string.Empty, hash);
 
         return shortCode;

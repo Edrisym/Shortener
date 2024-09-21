@@ -13,7 +13,7 @@ public class ShortenUrlValidator : AbstractValidator<ShortenUrl>
 
     private bool IsValidUrl(string url)
     {
-        var urlPattern = @"^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?$";
+        var urlPattern = @"^(https?:\/\/)?((localhost(:\d{1,5})?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$";
         return Regex.IsMatch(url, urlPattern);
     }
 }
