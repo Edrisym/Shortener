@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Shortener.Persistence;
+
 namespace Shortener.Endpoints;
 
 public static class ShortenerEndpoint
@@ -12,7 +15,6 @@ public static class ShortenerEndpoint
                     CancellationToken cancellationToken,
                     HttpContext context) =>
                 {
-                    
                     var remoteIpAddress = context.Connection.RemoteIpAddress;
                     logger.LogWarning($"User with Ip address requested a short url. => {remoteIpAddress}");
 
@@ -28,12 +30,32 @@ public static class ShortenerEndpoint
                     logger.LogInformation($"Shortening the URL was successfully done. => {results}");
                     return Results.Ok(new ShortenUrl(result));
                 })
-            .WithName("Shorten your URL")
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status429TooManyRequests)
-            .Produces(StatusCodes.Status200OK, typeof(object))
-            .ProducesValidationProblem()
             .RequireRateLimiting("sliding")
             .WithOpenApi();
+
+
+        app.MapGet("{code}", async (
+                string code,
+                ShortenerDbContext dbContext,
+                ILogger<ShortenUrl> logger,
+                CancellationToken cancellationToken,
+                HttpContext context) =>
+            {
+                var remoteIpAddress = context.Connection.RemoteIpAddress;
+                logger.LogWarning($"User with Ip address requested a short url. => {remoteIpAddress}");
+
+                var shortenedUrl = await dbContext.ShortUrl
+                    .SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
+
+                if (shortenedUrl is null)
+                {
+                    return Results.NotFound();
+                }
+
+                var encodedUrl = Uri.EscapeUriString(shortenedUrl.OriginalUrl);
+                return Results.Redirect(encodedUrl);
+            }).RequireRateLimiting("sliding")
+            .WithOpenApi();
+        ;
     }
 }
