@@ -1,17 +1,46 @@
 ﻿version: '3.7'
 
 services:
-  mongodb_container:
-    image: mongo:latest
+  shortener:
+    image: ${DOCKER_REGISTRY-}shortener
+    build:
+      context: .
+      dockerfile: shortener/Dockerfile
     environment:
-      MONGO_INITDB_ROOT_USERNAME: sa
-      MONGO_INITDB_ROOT_PASSWORD: 1234
-      ports:
-        -27017:27017
-      volumes:
-        -mongodb_data_container:/data/db
-
-volumes:
-  mongodb_data_container:
+      - ASPNETCORE_ENVIRONMENT=Development
+      ##- ASPNETCORE_URLS=https://+:443;https://+:8080
+    ports:
+      - "8082:8080"
+      ## - "8084:443"
+      #    volumes:
+      #      - /Users/edrisym/Projects/Edrisym.Shortener:/app
   
-     
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:master
+    ports:
+      - "3000:3000"
+    volumes:
+      - /Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+        
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus_grafprom
+    restart: always
+    ports:
+      - "9090:9090"
+      ##  volumes:
+      ##  - /Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      ##- ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+        
+        
+#  alertmanager:
+#    image: prom/alertmanager:latest
+#    container_name: alertmanager
+#    volumes:
+#      - ./alertmanager:/etc/alertmanager
+#    command:
+#      - '--config.file=/etc/alertmanager/alertmanager.yml'
+#      - '--storage.path=/alertmanager'
+#    ports:
+#      - '9093:9093'

@@ -1,3 +1,5 @@
+using Prometheus;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureAppSettings();
@@ -5,6 +7,8 @@ builder.AddRateLimiting();
 builder.ConfigureDbContext();
 builder.Services.AddServices();
 builder.Services.AddFluentApiValidation();
+
+builder.Services.UseHttpClientMetrics();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -16,9 +20,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMetricServer();
+app.UseHttpMetrics();
+
 app.UseForwardedHeaders();
 app.MapShortenEndpoint();
 app.UseHttpsRedirection();
+
 
 app.UseRateLimiter();
 
