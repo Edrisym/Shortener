@@ -2,6 +2,7 @@
 
 services:
   shortener:
+    container_name: shortener
     image: ${DOCKER_REGISTRY-}shortener
     build:
       context: .
@@ -11,9 +12,9 @@ services:
       ##- ASPNETCORE_URLS=https://+:443;https://+:8080
     ports:
       - "8082:8080"
-      ## - "8084:443"
-      #    volumes:
-      #      - /Users/edrisym/Projects/Edrisym.Shortener:/app
+  #      ## - "8084:443"
+  #      #    volumes:
+  #      #      - /Users/edrisym/Projects/Edrisym.Shortener:/app
   
   grafana:
     container_name: grafana
@@ -21,19 +22,19 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-        
+      - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+  
   prometheus:
     image: prom/prometheus
     container_name: prometheus_grafprom
     restart: always
     ports:
       - "9090:9090"
-      ##  volumes:
-      ##  - /Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      ##- ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
-        
-        
+    volumes:
+    - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#      ##- ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+
+
 #  alertmanager:
 #    image: prom/alertmanager:latest
 #    container_name: alertmanager
