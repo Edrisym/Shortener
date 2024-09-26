@@ -12,9 +12,9 @@ services:
       ##- ASPNETCORE_URLS=https://+:443;https://+:8080
     ports:
       - "8082:8080"
-  #      ## - "8084:443"
-  #      #    volumes:
-  #      #      - /Users/edrisym/Projects/Edrisym.Shortener:/app
+    #  - "8084:443"
+    volumes:
+      - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener:/src
   
   grafana:
     container_name: grafana
@@ -31,7 +31,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-    - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 #      ##- ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
 
 
