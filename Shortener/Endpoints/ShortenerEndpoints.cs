@@ -10,7 +10,6 @@ public static class ShortenerEndpoint
         app.MapPost("/shorten",
                 async ([FromBody] ShortenUrl request,
                     IShortenService shortenService,
-                    IValidator<ShortenUrl> validator,
                     ILogger<ShortenUrl> logger,
                     CancellationToken cancellationToken,
                     HttpContext context) =>
@@ -18,17 +17,18 @@ public static class ShortenerEndpoint
                     var remoteIpAddress = context.Connection.RemoteIpAddress;
                     logger.LogWarning($"User with Ip address requested a short url. => {remoteIpAddress}");
 
-                    var results = await validator.ValidateAsync(request, cancellationToken);
-                    if (!results.IsValid)
+                    if (!request.LongUrl.IsValid())
                     {
-                        logger.LogWarning($"Shortening Failed. => {results}");
-                        return Results.ValidationProblem(results.ToDictionary());
+                        return Results.ValidationProblem(new Dictionary<string, string[]>
+                            {
+                                { "LongUrl", ["Please provide a valid URL.", "Error message 2"] },
+                            }
+                        );
                     }
 
-
                     var result = await shortenService.MakeShortUrl(request.LongUrl, cancellationToken);
-                    logger.LogInformation($"Shortening the URL was successfully done. => {results}");
-                    return Results.Ok(new ShortenUrl(result));
+                    logger.LogInformation($"Shortening the URL was successfully done. => {request.LongUrl}");
+                    return Results.Ok(new ShortenUrl { LongUrl = result });
                 })
             .RequireRateLimiting("sliding")
             .WithOpenApi();

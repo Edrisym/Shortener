@@ -11,12 +11,6 @@ namespace Shortener.WebApplicationExtensions;
 
 public static class WebApplicationExtensions
 {
-    public static void AddFluentApiValidation(this IServiceCollection serviceCollection)
-    {
-        serviceCollection.AddValidatorsFromAssemblyContaining<ShortenUrlValidator>();
-        serviceCollection.AddFluentValidationAutoValidation();
-    }
-
     public static void ConfigureAppSettings(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));

@@ -1,3 +1,10 @@
-namespace Shortener.Common;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
-public record ShortenUrl(string LongUrl);
+namespace Shortener.Common
+{
+    public class ShortenUrl
+    {
+        public string LongUrl { get; set; }
+    }
+}
