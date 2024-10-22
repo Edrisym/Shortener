@@ -10,29 +10,27 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       ##- ASPNETCORE_URLS=https://+:443;https://+:8080
+#      - AppSettings__ConnectionString=mongodb://localhost:27017
     ports:
       - "8082:8080"
     #  - "8084:443"
+    #    depends_on:
+    #      - mongodb
     volumes:
       - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener:/src
+
+#  mongodb:
+#    container_name: mongodb
+#    image: mongo:latest
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=password
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongo_data:/data/db
   
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:master
-    ports:
-      - "3000:3000"
-    volumes:
-      - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-  
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus_grafprom
-    restart: always
-    ports:
-      - "9090:9090"
-    volumes:
-      - /Users/edrisym/desktop/RiderProjects/Edrisym.Shortener/Shortener/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#      ##- ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
+
 
 
 #  alertmanager:
