@@ -1,11 +1,5 @@
-using System.Net;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 using Shortener.Common.Models;
-using Shortener.Persistence;
-using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
-
 
 namespace Shortener.WebApplicationExtensions;
 
@@ -50,25 +44,5 @@ public static class WebApplicationExtensions
                 // options.QueueLimit = myOptions.QueueLimit;
             });
         });
-    }
-
-    public static void AddCORS(this IServiceCollection services)
-    {
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAll",
-                builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-        });
-
-        services.AddControllers();
-    }
-
-    public static void UseCors(IApplicationBuilder app)
-    {
-        app.UseCors("AllowReactApp");
-        app.UseRouting();
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
     }
 }

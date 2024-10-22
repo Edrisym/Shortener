@@ -7,3 +7,5 @@ global using System.Text.RegularExpressions;
 global using Microsoft.EntityFrameworkCore;
 global using Shortener.Middlewares;
 global using Shortener.Persistence;
+global using Shortener.Common.Models;
+global using Microsoft.AspNetCore.RateLimiting;
