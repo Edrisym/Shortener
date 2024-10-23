@@ -12,6 +12,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     private readonly AppSettings _optionsValue = options.Value;
     private const string BaseUrlPattern = "{0}{1}";
     private const int NumberZero = 0;
+    private const int NumberSeven = 7;
     private const int NumberSix = 5;
 
     public async Task<string> MakeShortUrl(string originalUrl, CancellationToken cancellationToken)
@@ -53,7 +54,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             return false;
         }
 
-        for (var i = 0; i < hashCode.Length; i += 7)
+        for (var i = NumberZero; i < hashCode.Length; i += NumberSeven)
         {
             var segment = i + _optionsValue.HashParts <= hashCode.Length
                 ? hashCode.Substring(i, _optionsValue.HashParts)
