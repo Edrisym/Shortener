@@ -7,19 +7,21 @@ using Shortener.Persistence;
 
 namespace Shortener.Services;
 
-public class ShortenService(
-    IOptions<AppSettings> options,
-    ShortenerDbContext dbContext,
-    ILogger<ShortUrl> logger) : IShortenService
+public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
 {
+    private readonly AppSettings _optionsValue = options.Value;
+    private const string BaseUrlPattern = "{0}{1}";
+    private const int NumberZero = 0;
+    private const int NumberSix = 5;
+
     public async Task<string> MakeShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
         var shortCode = GenerateHashing(originalUrl);
+        var shortenedUrl = string.Format(BaseUrlPattern, _optionsValue.BaseUrl, shortCode);
 
         if (CheckDuplicateLongUrl(shortCode, originalUrl))
         {
-            logger.LogWarning($"User requested a existing url => Url = {originalUrl} shortCode = {shortCode}");
-            return $"{options.Value.BaseUrl}{shortCode}";
+            return shortenedUrl;
         }
 
         var urlEntity = new ShortUrl
@@ -36,13 +38,10 @@ public class ShortenService(
         }
         catch (Exception ex)
         {
-            logger.LogError($"Database Error on shortening service while saving short code => {shortCode}");
-
-            // TODO make a Result pattern
             throw new Exception("Error saving to database", ex);
         }
 
-        return $"{options.Value.BaseUrl}{shortCode}";
+        return shortenedUrl;
     }
 
     private bool SegmentHashCode(string hashCode, out List<string> segments)
@@ -56,8 +55,8 @@ public class ShortenService(
 
         for (var i = 0; i < hashCode.Length; i += 7)
         {
-            var segment = i + options.Value.HashParts <= hashCode.Length
-                ? hashCode.Substring(i, options.Value.HashParts)
+            var segment = i + _optionsValue.HashParts <= hashCode.Length
+                ? hashCode.Substring(i, _optionsValue.HashParts)
                 : hashCode.Substring(i);
 
             segments.Add(segment);
@@ -68,16 +67,14 @@ public class ShortenService(
 
     public string ExtractHashFromSegments(IEnumerable<string> segments)
     {
-        const int numberZero = 0;
-        const int numberSix = 5;
         var hash = segments
-            .Where(segment => segment.Length > numberSix)
-            .Select(segment => segment[numberZero]);
+            .Where(segment => segment.Length > NumberSix)
+            .Select(segment => segment[NumberZero]);
         var shortCode = string.Join(string.Empty, hash);
 
         return shortCode;
     }
-    
+
     public bool CheckDuplicateLongUrl(string shortCode, string originalUrl)
     {
         return dbContext.ShortUrl
