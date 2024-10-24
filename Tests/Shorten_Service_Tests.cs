@@ -23,7 +23,7 @@ namespace Tests
 
             _dbContext = new ShortenerDbContext(options);
             _mockOptions = Options.Create(new AppSettings { BaseUrl = "https://short.url/", HashParts = 7 });
-            _shortenService = new ShortenService(_mockOptions, _dbContext, _logger);
+            _shortenService = new ShortenService(_mockOptions, _dbContext);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Tests
             mockDbContext.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Database error"));
 
-            var serviceWithMockDbContext = new ShortenService(_mockOptions, mockDbContext.Object, _logger);
+            var serviceWithMockDbContext = new ShortenService(_mockOptions, mockDbContext.Object);
 
             var originalUrl = "https://example.com";
 

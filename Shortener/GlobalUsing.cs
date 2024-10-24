@@ -9,3 +9,6 @@ global using Shortener.Middlewares;
 global using Shortener.Persistence;
 global using Shortener.Common.Models;
 global using Microsoft.AspNetCore.RateLimiting;
+global using System.Security.Cryptography;
+global using System.Text;
+global using Microsoft.Extensions.Options;
