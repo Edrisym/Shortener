@@ -13,7 +13,6 @@ namespace Tests
         private readonly ShortenService _shortenService;
         private readonly ShortenerDbContext _dbContext;
         private readonly IOptions<AppSettings> _mockOptions;
-        private readonly ILogger<ShortUrl> _logger;
 
         public Shorten_Service_Tests()
         {
