@@ -1,6 +1,4 @@
 var builder = WebApplication.CreateBuilder(args);
-
-
 var settings = ConfigureConfigurations(builder);
 builder.ConfigureDbContext(settings);
 builder.Services.AddScoped<IShortenService, ShortenService>();
@@ -36,7 +34,10 @@ app.MapGet("{code}",
             return Results.NotFound();
         }
 
+        // todo : find alternative 
+#pragma warning disable SYSLIB0013
         var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
+#pragma warning restore SYSLIB0013
 
         return Results.Redirect(url);
     });
