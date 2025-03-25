@@ -6,9 +6,7 @@ builder.Services.AddServices();
 
 var app = builder.Build();
 
-app.UseMiddleware<RequestResponseLoggingMiddleware>();
 app.UseRouting();
-
 
 app.MapPost("/shorten",
     async ([FromQuery] string longUrl,
