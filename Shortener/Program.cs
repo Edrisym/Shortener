@@ -10,17 +10,17 @@ var app = builder.Build();
 app.UseRouting();
 
 app.MapPost("/shorten",
-    async ([FromQuery] string longUrl,
+    async ([FromQuery] string url,
         IShortenService service,
         CancellationToken cancellationToken) =>
     {
-        if (!longUrl.IsValid())
+        if (!url.IsValid())
         {
             return Results.BadRequest(
                 "The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
         }
 
-        var result = await service.MakeShortUrl(longUrl, cancellationToken);
+        var result = await service.MakeShortUrl(url, cancellationToken);
         return Results.Json(new { LongUrl = result });
     });
 
@@ -36,7 +36,9 @@ app.MapGet("{code}",
             return Results.NotFound();
         }
 
-        return Results.Redirect(Uri.EscapeDataString(shortenedUrl.LongUrl));
+        var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
+
+        return Results.Redirect(url);
     });
 
 app.Run();
@@ -44,9 +46,10 @@ app.Run();
 static AppSettings ConfigureConfigurations(WebApplicationBuilder builder)
 {
     builder.Services.AddOptions();
-    builder.Services.Configure<AppSettings>(builder.Configuration);
+    builder.Services.Configure<AppSettings>
+        (builder.Configuration.GetSection(nameof(AppSettings)));
 
-    return builder.Configuration.Get<AppSettings>() ??
+    return builder.Configuration.GetSection("AppSettings").Get<AppSettings>() ??
            throw new Exception("Settings is not configured properly.");
 }
 
