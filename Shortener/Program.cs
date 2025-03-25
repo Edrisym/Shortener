@@ -1,8 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureAppSettings();
-builder.ConfigureDbContext();
-builder.Services.AddServices();
+
+var settings = ConfigureConfigurations(builder);
+builder.ConfigureDbContext(settings);
+builder.Services.AddScoped<IShortenService, ShortenService>();
 
 var app = builder.Build();
 
@@ -10,20 +11,21 @@ app.UseRouting();
 
 app.MapPost("/shorten",
     async ([FromQuery] string longUrl,
-        IShortenService shortenService,
+        IShortenService service,
         CancellationToken cancellationToken) =>
     {
         if (!longUrl.IsValid())
         {
-            return Results.BadRequest("The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
+            return Results.BadRequest(
+                "The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
         }
 
-        var result = await shortenService.MakeShortUrl(longUrl, cancellationToken);
-        return Results.Json(new  { LongUrl = result });
+        var result = await service.MakeShortUrl(longUrl, cancellationToken);
+        return Results.Json(new { LongUrl = result });
     });
 
 app.MapGet("{code}",
-    async (string code,
+    async ([FromRoute] string code,
         ShortenerDbContext dbContext,
         CancellationToken cancellationToken) =>
     {
@@ -34,11 +36,19 @@ app.MapGet("{code}",
             return Results.NotFound();
         }
 
-        var encodedUrl = Uri.EscapeDataString(shortenedUrl.LongUrl);
-        return Results.Redirect(encodedUrl);
+        return Results.Redirect(Uri.EscapeDataString(shortenedUrl.LongUrl));
     });
 
 app.Run();
+
+static AppSettings ConfigureConfigurations(WebApplicationBuilder builder)
+{
+    builder.Services.AddOptions();
+    builder.Services.Configure<AppSettings>(builder.Configuration);
+
+    return builder.Configuration.Get<AppSettings>() ??
+           throw new Exception("Settings is not configured properly.");
+}
 
 public static class UrlValidation
 {
