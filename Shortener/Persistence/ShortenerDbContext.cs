@@ -12,10 +12,12 @@ namespace Shortener.Persistence
             {
                 c.ToCollection("Urls");
 
+                c.HasKey(u => u.Id);
                 c.Property(u => u.Id)
+                    .IsUnicode()
                     .IsRequired()
                     .HasMaxLength(36);
-                
+
                 c.Property(u => u.LongUrl)
                     .IsRequired()
                     .HasMaxLength(2048);
