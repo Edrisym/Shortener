@@ -42,6 +42,19 @@ app.MapGet("{code}",
         return Results.Redirect(url);
     });
 
+app.MapGet("",
+    async (ShortenerDbContext dbContext,
+        CancellationToken cancellationToken) =>
+    {
+        return await dbContext.Urls.Select(x => new
+        {
+            x.LongUrl,
+            x.ShortCode,
+            x.CreatedAt,
+            x.ExpiresAt
+        }).ToListAsync(cancellationToken);
+    });
+
 app.Run();
 
 static AppSettings ConfigureConfigurations(WebApplicationBuilder builder)
