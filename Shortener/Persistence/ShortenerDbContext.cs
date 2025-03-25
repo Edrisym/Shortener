@@ -1,26 +1,39 @@
-using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
-using Shortener.Common.Models;
 
-namespace Shortener.Persistence;
-
-public class ShortenerDbContext : DbContext
+namespace Shortener.Persistence
 {
-    public DbSet<ShortUrl> ShortUrl { get; set; }
-
-    public ShortenerDbContext(DbContextOptions dbContextOptions)
-        : base(dbContextOptions)
+    public class ShortenerDbContext(DbContextOptions<ShortenerDbContext> options) : DbContext(options)
     {
-    }
+        public DbSet<Url> Urls { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ShortUrl>()
-            .ToCollection("shortUrl");
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Url>(c =>
+            {
+                c.ToCollection("Urls");
 
-        modelBuilder.Entity<ShortUrl>()
-            .HasIndex(x => x.ShortCode)
-            .IsUnique()
-            .IsDescending();
+                c.Property(u => u.Id)
+                    .IsRequired()
+                    .HasMaxLength(36);
+                
+                c.Property(u => u.LongUrl)
+                    .IsRequired()
+                    .HasMaxLength(2048);
+
+                c.Property(u => u.ShortCode)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                c.Property(u => u.CreatedAt)
+                    .IsRequired();
+
+                c.Property(u => u.ExpiresAt)
+                    .IsRequired(false);
+
+                c.HasIndex(u => u.ShortCode)
+                    .IsUnique()
+                    .IsDescending();
+            });
+        }
     }
 }

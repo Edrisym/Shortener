@@ -21,16 +21,17 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             return shortenedUrl;
         }
 
-        var urlEntity = new ShortUrl
+        var urlEntity = new Url()
         {
             CreatedAt = DateTime.UtcNow,
-            OriginalUrl = originalUrl,
+            LongUrl = originalUrl,
             ShortCode = shortCode
         };
 
+        //Remove try 
         try
         {
-            await dbContext.ShortUrl.AddAsync(urlEntity, cancellationToken);
+            await dbContext.Urls.AddAsync(urlEntity, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
@@ -72,11 +73,11 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
         return shortCode;
     }
 
-    public bool CheckDuplicateLongUrl(string shortCode, string originalUrl)
+    public bool CheckDuplicateLongUrl(string code, string longUrl)
     {
-        return dbContext.ShortUrl
-            .Any(url => url.ShortCode == shortCode
-                        && url.OriginalUrl == originalUrl);
+        return dbContext.Urls
+            .Any(url => url.ShortCode == code
+                        && url.LongUrl == longUrl);
     }
 
     public string GenerateHashing(string longUrl)

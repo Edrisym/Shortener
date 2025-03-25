@@ -27,14 +27,14 @@ app.MapGet("{code}",
         ShortenerDbContext dbContext,
         CancellationToken cancellationToken) =>
     {
-        var shortenedUrl = await dbContext.ShortUrl.SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
+        var shortenedUrl = await dbContext.Urls.SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
 
         if (shortenedUrl is null)
         {
             return Results.NotFound();
         }
 
-        var encodedUrl = Uri.EscapeDataString(shortenedUrl.OriginalUrl);
+        var encodedUrl = Uri.EscapeDataString(shortenedUrl.LongUrl);
         return Results.Redirect(encodedUrl);
     });
 
