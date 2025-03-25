@@ -19,7 +19,7 @@ app.MapPost("/shorten",
         }
 
         var result = await shortenService.MakeShortUrl(longUrl, cancellationToken);
-        return Results.Json(new ShortenUrl { LongUrl = result });
+        return Results.Json(new  { LongUrl = result });
     });
 
 app.MapGet("{code}",
