@@ -30,7 +30,7 @@ namespace Shortener.Persistence
                     .IsRequired();
 
                 c.Property(u => u.ExpiresAt)
-                    .IsRequired(false);
+                    .IsRequired();
 
                 c.HasIndex(u => u.ShortCode)
                     .IsUnique()
