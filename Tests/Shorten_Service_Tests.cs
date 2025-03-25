@@ -2,9 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
-using Shortener.Services;
-using Microsoft.Extensions.Logging;
 using Moq;
+using Shortener.IServices;
 
 namespace Tests
 {
