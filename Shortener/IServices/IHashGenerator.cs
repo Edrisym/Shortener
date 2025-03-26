@@ -5,7 +5,7 @@ public interface IHashGenerator
     string GenerateShortCode(string input);
 }
 
-public class Sha256HashGenerator : IHashGenerator
+public class HashGenerator : IHashGenerator
 {
     public string GenerateShortCode(string input)
     {

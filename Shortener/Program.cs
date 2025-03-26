@@ -1,6 +1,8 @@
 var builder = WebApplication.CreateBuilder(args);
 var settings = ConfigureConfigurations(builder);
 builder.ConfigureDbContext(settings);
+
+builder.Services.AddScoped<IHashGenerator, HashGenerator>();
 builder.Services.AddScoped<IShortenService, ShortenService>();
 
 var app = builder.Build();
@@ -27,12 +29,16 @@ app.MapGet("{code}",
         ShortenerDbContext dbContext,
         CancellationToken cancellationToken) =>
     {
-        var shortenedUrl = await dbContext.Urls.SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
+        var shortenedUrl = await dbContext.Urls
+            .SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
 
         if (shortenedUrl is null)
-        {
             return Results.NotFound();
-        }
+
+        if (DateTime.UtcNow > shortenedUrl.ExpiresAt)
+            return Results.Problem(
+                "The Code is Expired Try shortening the url again.",
+                statusCode: StatusCodes.Status422UnprocessableEntity);
 
         // todo : find alternative 
 #pragma warning disable SYSLIB0013
