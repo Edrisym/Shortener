@@ -15,8 +15,7 @@ public class ShortenService(
     public async Task<string> ToShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
         var shortCode = hashGenerator.GenerateShortCode(originalUrl);
-        var shortUrl = $"{_settings.BaseUrl}/{shortCode}";
-
+        var shortUrl = $"{_settings.BaseUrl}/api/v1/urls/redirect/?code={shortCode}";
         if (await UrlExists(shortCode, originalUrl, cancellationToken))
             return shortUrl;
 
