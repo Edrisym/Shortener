@@ -6,7 +6,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         var settings = ConfigureConfigurations(builder);
-        ConfigureDbContext(builder, settings);
+        ConfigureDbContext(builder, settings.DatabaseSettings);
 
         #region Registering services
 
@@ -34,7 +34,7 @@ public class Program
                throw new Exception("Settings is not configured properly.");
     }
 
-    static void ConfigureDbContext(WebApplicationBuilder builder, AppSettings settings)
+    static void ConfigureDbContext(WebApplicationBuilder builder, DatabaseSettings settings)
     {
         builder.Services.AddDbContext<ShortenerDbContext>(options =>
         {

@@ -10,12 +10,12 @@ public class ShortenService(
     IOptions<AppSettings> settings,
     ShortenerDbContext dbContext) : IShortenService
 {
-    private readonly AppSettings _settings = settings.Value;
+    private readonly UrlSettings _settings = settings.Value.UrlSettings;
 
     public async Task<string> ToShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
         var shortCode = hashGenerator.GenerateShortCode(originalUrl);
-        var shortUrl = $"{_settings.BaseUrl}/api/v1/urls/redirect/?code={shortCode}";
+        var shortUrl = $"{_settings.BaseUrls.Gateway}/{shortCode}";
         if (await UrlExists(shortCode, originalUrl, cancellationToken))
             return shortUrl;
 

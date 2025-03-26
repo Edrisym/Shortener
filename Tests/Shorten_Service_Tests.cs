@@ -13,7 +13,7 @@ namespace Tests
     {
         private readonly IShortenService _shortenService;
         private readonly ShortenerDbContext _dbContext;
-        private readonly IOptions<AppSettings> _mockOptions;
+        private readonly IOptions<AppSettings> _settings;
         private readonly IHashGenerator _hashGenerator;
 
         public ShortenServiceTests()
@@ -23,8 +23,19 @@ namespace Tests
                 .Options;
 
             _dbContext = new ShortenerDbContext(options);
-            _mockOptions = Options.Create(new AppSettings { BaseUrl = "https://short.url/" });
-            _shortenService = new ShortenService(_hashGenerator, _mockOptions, _dbContext);
+            _settings = Options.Create(new AppSettings
+            {
+                UrlSettings =
+                {
+                    Endpoint = "api/v1/urls",
+
+                    BaseUrls =
+                    {
+                        Local = "https://short.url/",
+                    }
+                }
+            });
+            _shortenService = new ShortenService(_hashGenerator, _settings, _dbContext);
         }
 
         [Fact]
@@ -35,7 +46,7 @@ namespace Tests
 
             var result = await _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
 
-            Assert.Equal($"{_mockOptions.Value.BaseUrl}{expectedShortCode}", result);
+            Assert.Equal($"{_settings.Value.UrlSettings.BaseUrls.Local}{expectedShortCode}", result);
         }
     }
 }
