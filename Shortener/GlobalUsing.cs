@@ -9,3 +9,4 @@ global using Shortener.Common.Models;
 global using System.Security.Cryptography;
 global using System.Text;
 global using Microsoft.Extensions.Options;
+global using Shortener.Endpoints;

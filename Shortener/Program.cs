@@ -1,5 +1,3 @@
-using Shortener.Endpoints;
-
 namespace Shortener;
 
 public class Program
@@ -10,12 +8,14 @@ public class Program
         var settings = ConfigureConfigurations(builder);
         ConfigureDbContext(builder, settings);
 
+        #region Registering services
+
         builder.Services.AddScoped<IHashGenerator, HashGenerator>();
         builder.Services.AddScoped<IShortenService, ShortenService>();
 
-        var app = builder.Build();
+        #endregion
 
-        app.UseRouting();
+        var app = builder.Build();
 
         app.MapGroup("/api/v1/urls")
             .WithTags("shortener APIs")
