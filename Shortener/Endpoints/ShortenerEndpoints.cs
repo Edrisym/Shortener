@@ -1,27 +1,25 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace Shortener.Endpoints;
 
 public static class ShortenerEndpoints
 {
-    public static IEndpointRouteBuilder MapShortenerEndpoints(this IEndpointRouteBuilder app)
+    public static void MapShortenerEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/shorten", ShortenUrl);
-        app.MapGet("{code}/redirect", RedirectToUrl);
+        app.MapGet("/redirect", RedirectToUrl);
         app.MapGet("", GetUrls);
-        return app;
     }
 
     private static async Task<List<UrlRecord>> GetUrls
     (ShortenerDbContext dbContext,
         CancellationToken cancellationToken)
     {
-        return await dbContext.Urls.Select(x => new UrlRecord(x.LongUrl, x.ShortCode, x.CreatedAt, x.ExpiresAt))
+        return await dbContext.Urls.Select(x =>
+                new UrlRecord(x.LongUrl, x.ShortCode, x.CreatedAt, x.ExpiresAt))
             .ToListAsync(cancellationToken);
     }
 
     private static async Task<IResult> RedirectToUrl
-    ([FromRoute] string code,
+    ([FromQuery(Name = "code")] string code,
         ShortenerDbContext dbContext,
         CancellationToken cancellationToken)
     {
@@ -36,8 +34,8 @@ public static class ShortenerEndpoints
                 "The Code is Expired. Try shortening the URL again.",
                 statusCode: StatusCodes.Status422UnprocessableEntity);
 
-        // todo : find alternative 
 #pragma warning disable SYSLIB0013
+        // todo : find alternative 
         var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
 #pragma warning restore SYSLIB0013
 
@@ -45,7 +43,7 @@ public static class ShortenerEndpoints
     }
 
     private static async Task<IResult> ShortenUrl
-    ([FromQuery] string url,
+    ([FromQuery(Name = "longUrl")] string url,
         IShortenService service,
         CancellationToken cancellationToken)
     {
