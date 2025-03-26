@@ -1,0 +1,6 @@
+@SharpYarp_HostAddress = http://localhost:5255
+
+GET {{SharpYarp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
