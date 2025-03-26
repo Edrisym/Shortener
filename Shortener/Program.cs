@@ -1,6 +1,8 @@
+using Shortener.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
 var settings = ConfigureConfigurations(builder);
-builder.ConfigureDbContext(settings);
+ConfigureDbContext(builder, settings);
 
 builder.Services.AddScoped<IHashGenerator, HashGenerator>();
 builder.Services.AddScoped<IShortenService, ShortenService>();
@@ -73,14 +75,12 @@ static AppSettings ConfigureConfigurations(WebApplicationBuilder builder)
            throw new Exception("Settings is not configured properly.");
 }
 
-public static class UrlValidation
+static void ConfigureDbContext(WebApplicationBuilder builder, AppSettings settings)
 {
-    const string UrlPattern = @"^(https?:\/\/)?((localhost(:\d{1,5})?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$";
-
-    public static bool IsValid(this string? value)
+    builder.Services.AddDbContext<ShortenerDbContext>(options =>
     {
-        return !string.IsNullOrEmpty(value) && Regex.IsMatch(value!, UrlPattern);
-    }
+        options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
+    });
 }
 
 public partial class Program

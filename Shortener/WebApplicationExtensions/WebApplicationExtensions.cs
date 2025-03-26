@@ -1,20 +1,7 @@
-using Shortener.Common.Models;
-using Microsoft.AspNetCore.RateLimiting;
-
 namespace Shortener.WebApplicationExtensions;
 
 public static class WebApplicationExtensions
 {
-
-
-    public static void ConfigureDbContext(this WebApplicationBuilder builder , AppSettings settings)
-    {
-        builder.Services.AddDbContext<ShortenerDbContext>(options =>
-        {
-            options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
-        });
-    }
-
     // public static void AddRateLimiting(this WebApplicationBuilder builder)
     // {
     //     var myOptions = builder.Configuration.GetSection("MyRateLimitOptions").Get<MyRateLimitOptions>();
@@ -34,4 +21,14 @@ public static class WebApplicationExtensions
     //         });
     //     });
     // }
+}
+
+public static class UrlValidation
+{
+    const string UrlPattern = @"^(https?:\/\/)?((localhost(:\d{1,5})?)|([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(\/[^\s]*)?$";
+
+    public static bool IsUrlValid(this string? value)
+    {
+        return !string.IsNullOrEmpty(value) && Regex.IsMatch(value!, UrlPattern);
+    }
 }
