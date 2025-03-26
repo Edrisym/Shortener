@@ -14,7 +14,6 @@ namespace Shortener.Persistence
 
                 c.HasKey(u => u.Id);
                 c.Property(u => u.Id)
-                    .IsUnicode()
                     .IsRequired()
                     .HasMaxLength(36);
 
