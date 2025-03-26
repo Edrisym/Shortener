@@ -2,10 +2,12 @@ namespace Shortener.IServices;
 
 public interface IShortenService
 {
-    Task<string> MakeShortUrl(string longUrl, CancellationToken cancellationToken);
+    Task<string> ToShortUrl(string longUrl, CancellationToken cancellationToken);
 }
 
-public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext dbContext) : IShortenService
+public class ShortenService(
+    IOptions<AppSettings> options,
+    ShortenerDbContext dbContext) : IShortenService
 {
     private readonly AppSettings _optionsValue = options.Value;
     private const string BaseUrlPattern = "{0}{1}";
@@ -13,19 +15,16 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
     private const int NumberSeven = 7;
     private const int NumberSix = 5;
 
-    public async Task<string> MakeShortUrl(string originalUrl, CancellationToken cancellationToken)
+    public async Task<string> ToShortUrl(string originalUrl, CancellationToken cancellationToken)
     {
-        var shortCode = GenerateHashing(originalUrl);
-        var shortenedUrl = string.Format(BaseUrlPattern, _optionsValue.BaseUrl, shortCode);
+        var shortCode = GenerateShortCode(originalUrl);
+        var shortUrl = string.Format(BaseUrlPattern, _optionsValue.BaseUrl, shortCode);
 
-        if (CheckDuplicateLongUrl(shortCode, originalUrl))
-        {
-            return shortenedUrl;
-        }
+        if (IsDuplicatedUrl(shortCode, originalUrl))
+            return shortUrl;
 
-        var urlEntity = new Url()
+        var url = new Url
         {
-            CreatedAt = DateTime.UtcNow,
             LongUrl = originalUrl,
             ShortCode = shortCode
         };
@@ -33,7 +32,7 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
         //Remove try 
         try
         {
-            await dbContext.Urls.AddAsync(urlEntity, cancellationToken);
+            await dbContext.Urls.AddAsync(url, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
@@ -41,19 +40,28 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             throw new Exception("Error saving to database", ex);
         }
 
-        return shortenedUrl;
+        return shortUrl;
     }
 
-    private bool SegmentHashCode(string hashCode, out List<string> segments)
+    public string GenerateShortCode(string longUrl)
     {
-        segments = [];
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(longUrl));
+        var base64Hash = Convert.ToBase64String(hashBytes);
 
+        var cleanedHash = Regex.Replace(base64Hash, "[+/=]", string.Empty);
+
+        return SegmentAndBuildHashCode(cleanedHash);
+    }
+
+    private string SegmentAndBuildHashCode(string hashCode)
+    {
         if (string.IsNullOrEmpty(hashCode))
-        {
-            return false;
-        }
+            return string.Empty;
 
-        for (var i = NumberZero; i < hashCode.Length; i += NumberSeven)
+        var segments = new List<string>();
+        var sb = new StringBuilder();
+
+        for (var i = 0; i < hashCode.Length; i += _optionsValue.HashParts)
         {
             var segment = i + _optionsValue.HashParts <= hashCode.Length
                 ? hashCode.Substring(i, _optionsValue.HashParts)
@@ -62,35 +70,21 @@ public class ShortenService(IOptions<AppSettings> options, ShortenerDbContext db
             segments.Add(segment);
         }
 
-        return true;
+        foreach (var segment in segments)
+        {
+            if (segment.Length > NumberSix)
+            {
+                sb.Append(segment[NumberZero]);
+            }
+        }
+
+        return sb.ToString();
     }
 
-    public string ExtractHashFromSegments(IEnumerable<string> segments)
-    {
-        var hash = segments
-            .Where(segment => segment.Length > NumberSix)
-            .Select(segment => segment[NumberZero]);
-        var shortCode = string.Join(string.Empty, hash);
-
-        return shortCode;
-    }
-
-    public bool CheckDuplicateLongUrl(string code, string longUrl)
+    private bool IsDuplicatedUrl(string code, string longUrl)
     {
         return dbContext.Urls
             .Any(url => url.ShortCode == code
                         && url.LongUrl == longUrl);
-    }
-
-    public string GenerateHashing(string longUrl)
-    {
-        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(longUrl));
-        var base64Hash = Convert.ToBase64String(hashBytes);
-
-        var cleanedHash = Regex.Replace(base64Hash, "[+/=]", string.Empty);
-
-        return SegmentHashCode(cleanedHash, out var segments)
-            ? ExtractHashFromSegments(segments)
-            : string.Empty;
     }
 }

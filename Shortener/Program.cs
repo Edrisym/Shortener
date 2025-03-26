@@ -18,7 +18,7 @@ app.MapPost("/shorten",
                 "The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
         }
 
-        var result = await service.MakeShortUrl(url, cancellationToken);
+        var result = await service.ToShortUrl(url, cancellationToken);
         return Results.Json(new { LongUrl = result });
     });
 

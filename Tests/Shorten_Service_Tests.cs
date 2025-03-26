@@ -28,9 +28,9 @@ namespace Tests
         public async Task MakeShortUrl_ShouldReturnShortUrl_WhenValidOriginalUrl()
         {
             var originalUrl = "https://example.com";
-            var expectedShortCode = _shortenService.GenerateHashing(originalUrl);
+            var expectedShortCode = _shortenService.GenerateShortCode(originalUrl);
 
-            var result = await _shortenService.MakeShortUrl(originalUrl, CancellationToken.None);
+            var result = await _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
 
             Assert.Equal($"{_mockOptions.Value.BaseUrl}{expectedShortCode}", result);
         }
@@ -40,7 +40,7 @@ namespace Tests
         {
             var longUrl = "https://example.com";
 
-            var hash = _shortenService.GenerateHashing(longUrl);
+            var hash = _shortenService.GenerateShortCode(longUrl);
 
             Assert.NotEmpty(hash);
         }
@@ -62,7 +62,7 @@ namespace Tests
             var originalUrl = "https://example.com";
 
             await Assert.ThrowsAsync<NullReferenceException>(() =>
-                serviceWithMockDbContext.MakeShortUrl(originalUrl, CancellationToken.None));
+                serviceWithMockDbContext.ToShortUrl(originalUrl, CancellationToken.None));
         }
     }
 }
