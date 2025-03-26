@@ -11,57 +11,9 @@ var app = builder.Build();
 
 app.UseRouting();
 
-app.MapPost("/shorten",
-    async ([FromQuery] string url,
-        IShortenService service,
-        CancellationToken cancellationToken) =>
-    {
-        if (!url.IsValid())
-        {
-            return Results.BadRequest(
-                "The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
-        }
-
-        var result = await service.ToShortUrl(url, cancellationToken);
-        return Results.Json(new { LongUrl = result });
-    });
-
-app.MapGet("{code}",
-    async ([FromRoute] string code,
-        ShortenerDbContext dbContext,
-        CancellationToken cancellationToken) =>
-    {
-        var shortenedUrl = await dbContext.Urls
-            .SingleOrDefaultAsync(s => s.ShortCode == code, cancellationToken);
-
-        if (shortenedUrl is null)
-            return Results.NotFound();
-
-        if (DateTime.UtcNow > shortenedUrl.ExpiresAt)
-            return Results.Problem(
-                "The Code is Expired Try shortening the url again.",
-                statusCode: StatusCodes.Status422UnprocessableEntity);
-
-        // todo : find alternative 
-#pragma warning disable SYSLIB0013
-        var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
-#pragma warning restore SYSLIB0013
-
-        return Results.Redirect(url);
-    });
-
-app.MapGet("",
-    async (ShortenerDbContext dbContext,
-        CancellationToken cancellationToken) =>
-    {
-        return await dbContext.Urls.Select(x => new
-        {
-            x.LongUrl,
-            x.ShortCode,
-            x.CreatedAt,
-            x.ExpiresAt
-        }).ToListAsync(cancellationToken);
-    });
+app.MapGroup("/api/v1/url")
+    .WithTags("shortener APIs")
+    .MapShortenerEndpoints();
 
 app.Run();
 
