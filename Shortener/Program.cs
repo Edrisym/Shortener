@@ -7,6 +7,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var settings = ConfigureConfigurations(builder);
         ConfigureDbContext(builder, settings.DatabaseSettings);
+        builder.Services.AddControllers();
+
+        #region CORS
 
         builder.Services.AddCors(options =>
         {
@@ -18,6 +21,8 @@ public class Program
             });
         });
 
+        #endregion
+
         #region Registering services
 
         builder.Services.AddScoped<IHashGenerator, HashGenerator>();
@@ -25,12 +30,9 @@ public class Program
 
         #endregion
 
-        builder.Services.AddCors();
-        builder.Services.AddControllers();
-
         var app = builder.Build();
 
-        app.UseCors();
+        app.UseCors("AllowAll");
         app.UseRouting();
         app.MapControllers();
 
