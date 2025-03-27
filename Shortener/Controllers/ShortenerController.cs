@@ -7,7 +7,9 @@ public class ShortenerController(
     IShortenService shortenService) : ControllerBase
 {
     [HttpPost("shorten")]
-    public async Task<IActionResult> ShortenUrl([FromQuery] string longUrl, CancellationToken cancellationToken)
+    public async Task<IActionResult> ShortenUrl(
+        [FromQuery] string longUrl,
+        CancellationToken cancellationToken)
     {
         var request = new ShortenUrlRequest
         {
@@ -46,12 +48,12 @@ public class ShortenerController(
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<UrlResponse>>> GetUrls(CancellationToken cancellationToken)
+    public async Task<List<UrlResponse>> GetUrls(CancellationToken cancellationToken)
     {
         var urls = await dbContext.Urls
             .Select(x => new UrlResponse(x.LongUrl, x.ShortCode, x.CreatedAt, x.ExpiresAt))
             .ToListAsync(cancellationToken);
 
-        return Ok(urls);
+        return urls;
     }
 }
