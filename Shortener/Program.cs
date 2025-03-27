@@ -8,6 +8,16 @@ public class Program
         var settings = ConfigureConfigurations(builder);
         ConfigureDbContext(builder, settings.DatabaseSettings);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+
         #region Registering services
 
         builder.Services.AddScoped<IHashGenerator, HashGenerator>();
@@ -15,11 +25,14 @@ public class Program
 
         #endregion
 
+        builder.Services.AddCors();
+        builder.Services.AddControllers();
+
         var app = builder.Build();
 
-        app.MapGroup("/api/v1/urls")
-            .WithTags("shortener APIs")
-            .MapShortenerEndpoints();
+        app.UseCors();
+        app.UseRouting();
+        app.MapControllers();
 
         await app.RunAsync();
     }

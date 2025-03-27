@@ -2,7 +2,7 @@ namespace Shortener.Endpoints.DTOs.Requests;
 
 internal class RedirectRequest : IValidatableObject
 {
- public string Code { get; set; }
+    public string Code { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

@@ -1,7 +1,7 @@
 namespace Shortener.Endpoints.DTOs.Responses;
 
 public record UrlResponse(
-    string LongUrl,
-    string ShortCode,
+    [Required] string LongUrl,
+    [Required] string ShortCode,
     DateTime CreatedAt,
     DateTime ExpiresAt);

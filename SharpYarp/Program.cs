@@ -15,13 +15,13 @@ app.Use(async (context, next) =>
         if (context.Request.Method == "POST")
         {
             var longUrl = path.Trim('/');
-            context.Request.Path = "/api/v1/urls/shorten";
+            context.Request.Path = "/api/v1/shortener/shorten";
             context.Request.QueryString = new QueryString($"?longUrl={longUrl}");
         }
         else if (context.Request.Method == "GET")
         {
             var code = path.Trim('/');
-            context.Request.Path = "/api/v1/urls/redirect";
+            context.Request.Path = "/api/v1/shortener/redirect";
             context.Request.QueryString = new QueryString($"?code={code}");
         }
         else
