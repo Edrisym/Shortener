@@ -1,4 +1,4 @@
-namespace Shortener.Endpoints.DTOs.Requests;
+namespace Shortener.Controllers.DTOs.Requests;
 
 public class ShortenUrlRequest : IValidatableObject
 {
