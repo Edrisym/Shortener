@@ -1,8 +1,10 @@
+
+
 namespace Shortener.IServices;
 
 public interface IShortenService
 {
-    Task<string> ToShortUrl(string longUrl, CancellationToken cancellationToken);
+    Task<string> ToShortUrl(ShortenUrlRequest longUrl, CancellationToken cancellationToken);
 }
 
 public class ShortenService(
@@ -12,16 +14,16 @@ public class ShortenService(
 {
     private readonly UrlSettings _settings = settings.Value.UrlSettings;
 
-    public async Task<string> ToShortUrl(string originalUrl, CancellationToken cancellationToken)
+    public async Task<string> ToShortUrl(ShortenUrlRequest request, CancellationToken cancellationToken)
     {
-        var shortCode = hashGenerator.GenerateShortCode(originalUrl);
+        var shortCode = hashGenerator.GenerateShortCode(request.LongUrl);
         var shortUrl = $"{_settings.BaseUrls.Gateway}/{shortCode}";
-        if (await UrlExists(shortCode, originalUrl, cancellationToken))
+        if (await UrlExists(shortCode, request.LongUrl, cancellationToken))
             return shortUrl;
 
         var url = new Url
         {
-            LongUrl = originalUrl,
+            LongUrl = request.LongUrl,
             ShortCode = shortCode
         };
 
