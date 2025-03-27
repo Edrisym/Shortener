@@ -2,14 +2,14 @@ namespace Shortener.IServices;
 
 public interface IHashGenerator
 {
-    string GenerateShortCode(string input);
+    string GenerateShortCode(string url);
 }
 
 public class HashGenerator : IHashGenerator
 {
-    public string GenerateShortCode(string input)
+    public string GenerateShortCode(string url)
     {
-        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+        var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(url));
         var base64Hash = Convert.ToBase64String(hashBytes);
         var cleanedHash = Regex.Replace(base64Hash, "[+/=]", string.Empty);
 
