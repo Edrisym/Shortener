@@ -1,4 +1,4 @@
-global using Shortener.Common;
+global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Mvc;
 global using Shortener.IServices;
 global using Shortener.WebApplicationExtensions;
@@ -10,3 +10,5 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using Microsoft.Extensions.Options;
 global using Shortener.Endpoints;
+global using Shortener.Endpoints.DTOs.Requests;
+global using Shortener.Endpoints.DTOs.Responses;
