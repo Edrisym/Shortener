@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Shortener.Common.Models;
 using Shortener.Persistence;
 using Moq;
+using Shortener.Endpoints.DTOs.Requests;
 using Shortener.IServices;
 
 //TODO
@@ -41,7 +42,10 @@ namespace Tests
         [Fact]
         public async Task Should_Make_Given_Url_Short_Successfully()
         {
-            var originalUrl = "https://example.com";
+            var originalUrl = new ShortenUrlRequest
+            {
+                LongUrl = "https://example.com"
+            };
             var expectedShortCode = _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
 
             var result = await _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
