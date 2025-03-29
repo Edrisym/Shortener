@@ -45,7 +45,6 @@ public class ShortenerController(
         // todo: find an alternative
         var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
 #pragma warning restore SYSLIB0013
-
         return Redirect(url);
     }
 
