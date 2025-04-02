@@ -1,4 +1,4 @@
-namespace Shortener.IServices;
+namespace Shortener.Services;
 
 public interface IShortenService
 {

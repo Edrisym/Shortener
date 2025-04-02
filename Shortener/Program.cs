@@ -1,6 +1,7 @@
 using Serilog;
 using Serilog.Formatting.Compact;
-using Serilog.Sinks.Elasticsearch;
+using Shortener.Common;
+using Shortener.Services;
 
 namespace Shortener;
 
@@ -93,13 +94,3 @@ public class Program
     }
 }
 
-//TODO: move this to another namesace
-public abstract class GatewayHeaders
-{
-    public const string UserId = "X-Forwarded-UserId";
-    public const string Agent = "X-Forwarded-Agent";
-    public const string Referer = "X-Forwarded-Referer";
-    public const string Ip = "X-Forwarded-IP";
-    public const string GeoLocation = "X-Forwarded-Geo-Location";
-    public const string ForwardedHost = "X-Forwarded-Host";
-}

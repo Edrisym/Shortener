@@ -1,6 +1,5 @@
 global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Mvc;
-global using Shortener.IServices;
 global using Shortener.WebApplicationExtensions;
 global using System.Text.RegularExpressions;
 global using Microsoft.EntityFrameworkCore;

@@ -5,7 +5,7 @@ using Shortener.Common.Models;
 using Shortener.Persistence;
 using Moq;
 using Shortener.Controllers.DTOs.Requests;
-using Shortener.IServices;
+using Shortener.Services;
 
 //TODO
 namespace Tests

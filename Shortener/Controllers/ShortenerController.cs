@@ -1,3 +1,5 @@
+using Shortener.Services;
+
 namespace Shortener.Controllers;
 
 [ApiController]
