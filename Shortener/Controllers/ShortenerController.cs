@@ -27,25 +27,17 @@ public class ShortenerController(
         [FromQuery] string code,
         CancellationToken cancellationToken)
     {
-        var shortenedUrl = await shortenService.RedirectToUrl(
+        var longUrl = await shortenService.RedirectToUrl(
             new RedirectRequest
             {
                 Code = code
             },
             cancellationToken);
-
-        if (shortenedUrl is null)
+        
+        if (longUrl is null)
             return NotFound("No URL is found");
 
-        if (DateTime.UtcNow > shortenedUrl.ExpiresAt)
-            return UnprocessableEntity("The Code is Expired. Try shortening the URL again.");
-
-#pragma warning disable SYSLIB0013
-        // todo: find an alternative
-        var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
-#pragma warning restore SYSLIB0013
-
-        return Redirect(url);
+        return Redirect(longUrl!);
     }
 
     [HttpGet]
