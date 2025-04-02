@@ -1,5 +1,3 @@
-
-
 namespace Shortener.Controllers;
 
 [ApiController]
@@ -27,13 +25,12 @@ public class ShortenerController(
         [FromQuery] string code,
         CancellationToken cancellationToken)
     {
-        var request = new RedirectRequest
-        {
-            Code = code
-        };
-
-        var shortenedUrl = await dbContext.Urls
-            .SingleOrDefaultAsync(s => s.ShortCode == request.Code, cancellationToken);
+        var shortenedUrl = await shortenService.RedirectToUrl(
+            new RedirectRequest
+            {
+                Code = code
+            },
+            cancellationToken);
 
         if (shortenedUrl is null)
             return NotFound("No URL is found");
@@ -45,16 +42,22 @@ public class ShortenerController(
         // todo: find an alternative
         var url = Uri.EscapeUriString(shortenedUrl.LongUrl);
 #pragma warning restore SYSLIB0013
+
         return Redirect(url);
     }
 
     [HttpGet]
-    public async Task<List<UrlResponse>> GetUrls(CancellationToken cancellationToken)
+    public async Task<List<UrlResponse>> GetUrls(
+        CancellationToken cancellationToken)
     {
-        var urls = await dbContext.Urls
-            .Select(x => new UrlResponse(x.LongUrl, x.ShortCode, x.CreatedAt, x.ExpiresAt))
-            .ToListAsync(cancellationToken);
+        return await shortenService.GetUrls(cancellationToken);
+    }
 
-        return urls;
+    [HttpGet("{id}")]
+    public async Task<UrlResponse?> GetUrl(
+        string id,
+        CancellationToken cancellationToken)
+    {
+        return await shortenService.GetUrl(id, cancellationToken);
     }
 }

@@ -1,6 +1,6 @@
 namespace Shortener.Controllers.DTOs.Requests;
 
-internal class RedirectRequest : IValidatableObject
+public class RedirectRequest : IValidatableObject
 {
     public string Code { get; set; }
 
