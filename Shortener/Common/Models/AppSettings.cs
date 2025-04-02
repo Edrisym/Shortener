@@ -12,6 +12,13 @@ public class DatabaseSettings
     public string ConnectionString { get; set; }
     public string DatabaseName { get; set; }
     public Collections Collections { get; set; }
+    public Redis Redis { get; set; }
+}
+
+public class Redis
+{
+    public string Configuration { get; set; }
+    public string InstanceName { get; set; }
 }
 
 public class Collections
