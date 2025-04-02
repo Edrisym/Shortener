@@ -2,18 +2,20 @@ using Serilog;
 using Serilog.Formatting.Compact;
 using Shortener.Common;
 using Shortener.Services;
+using StackExchange.Redis;
 
 namespace Shortener;
 
-public class Program
+public static class Program
 {
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         ConfigureSerilog(builder);
-        var settings = ConfigureConfigurations(builder);
-        ConfigureDbContext(builder, settings.DatabaseSettings);
+        var settings = builder.ConfigureConfigurations();
+        builder.ConfigureDbContext(settings.DatabaseSettings);
+        builder.Services.ConfigureRedis(settings.DatabaseSettings.Redis);
         builder.Services.AddControllers();
         builder.Services.AddHttpContextAccessor();
 
@@ -37,6 +39,7 @@ public class Program
         builder.Services.AddScoped<IShortenService, ShortenService>();
 
         #endregion
+
 
         var app = builder.Build();
 
@@ -75,7 +78,7 @@ public class Program
         builder.Host.UseSerilog();
     }
 
-    static AppSettings ConfigureConfigurations(WebApplicationBuilder builder)
+    static AppSettings ConfigureConfigurations(this WebApplicationBuilder builder)
     {
         builder.Services.AddOptions();
         builder.Services.Configure<AppSettings>
@@ -85,12 +88,27 @@ public class Program
                throw new Exception("Settings is not configured properly.");
     }
 
-    static void ConfigureDbContext(WebApplicationBuilder builder, DatabaseSettings settings)
+    static void ConfigureDbContext(this WebApplicationBuilder builder,
+        DatabaseSettings settings)
     {
         builder.Services.AddDbContext<ShortenerDbContext>(options =>
         {
             options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
         });
     }
-}
 
+    private static void ConfigureRedis(this IServiceCollection services,
+        Redis settings)
+    {
+        var connMultiplexer = ConnectionMultiplexer.Connect(settings.Configuration);
+        services.AddSingleton<IConnectionMultiplexer>(connMultiplexer);
+        services.AddScoped<IRedisCacheService, RedisCacheService>();
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = settings.Configuration;
+            options.InstanceName = settings.InstanceName;
+            options.ConnectionMultiplexerFactory = async () => await Task.FromResult(connMultiplexer);
+        });
+    }
+}
