@@ -4,14 +4,14 @@
 Shortener is a high-performance, easy-to-use, and free URL shortening service built with **.NET Core**, **MongoDB**, **Redis**, and **YARP Reverse Proxy**. It allows users to create and manage short URLs, track click statistics, and integrate seamlessly with other applications through a RESTful API. This solution is perfect for anyone needing a reliable, self-hosted URL shortener with advanced monitoring and logging.
 
 ## Features
-✅ **Fast URL Shortening** – Uses Redis for quick access and caching.
-✅ **YARP Reverse Proxy** – Efficient API gateway and load balancing.
-✅ **Traditional Controllers & RESTful API** – Ensures better structure and maintainability.
-✅ **Logging & Monitoring** – Integrated with **Serilog**, planned **APM, Kibana, Logstash, and ELK** for advanced tracking.
-✅ **Unit Tests** – Ensures reliability and code quality.
-✅ **User Authentication (Planned)** – Users will be able to manage their links.
-✅ **Dashboard for URL Management (Planned)** – A web-based UI to manage links.
-✅ **CI/CD Pipeline (Planned)** – Automate testing and deployment.
+✅ **Fast URL Shortening** – Uses Redis for quick access and caching.    
+✅ **YARP Reverse Proxy** – Efficient API gateway and load balancing.        
+✅ **Traditional Controllers & RESTful API** – Ensures better structure and maintainability.     
+✅ **Logging & Monitoring** – Integrated with **Serilog**, planned **APM, Kibana, Logstash, and ELK** for advanced tracking.      
+✅ **Unit Tests** – Ensures reliability and code quality.        
+✅ **User Authentication (Planned)** – Users will be able to manage their links.        
+✅ **Dashboard for URL Management (Planned)** – A web-based UI to manage links.  
+✅ **CI/CD Pipeline (Planned)** – Automate testing and deployment.   
 ✅ **Docker Compose (Planned)** – Simplify deployment with containerized services.
 
 ## Tech Stack
@@ -56,7 +56,7 @@ dotnet run
 
 ### Shorten a URL
 ```http
-POST /shorten
+POST /{longUrl}
 {
     "url": "https://example.com"
 }
