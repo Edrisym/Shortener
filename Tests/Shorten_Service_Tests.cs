@@ -1,57 +1,112 @@
-// using System.Net.NetworkInformation;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.Extensions.Options;
-// using Shortener.Common.Models;
-// using Shortener.Persistence;
-// using Moq;
-// using Shortener.Controllers.DTOs.Requests;
-// using Shortener.Services;
-//
-// //TODO
-// namespace Tests
-// {
-//     public class ShortenServiceTests
-//     {
-//         private readonly IShortenService _shortenService;
-//         private readonly ShortenerDbContext _dbContext;
-//         private readonly IOptions<AppSettings> _settings;
-//         private readonly IHashGenerator _hashGenerator;
-//
-//         public ShortenServiceTests()
-//         {
-//             var options = new DbContextOptionsBuilder<ShortenerDbContext>()
-//                 .UseInMemoryDatabase(databaseName: "TestDatabase")
-//                 .Options;
-//
-//             _dbContext = new ShortenerDbContext(options);
-//             _settings = Options.Create(new AppSettings
-//             {
-//                 UrlSettings =
-//                 {
-//                     Endpoint = "api/v1/urls",
-//
-//                     BaseUrls =
-//                     {
-//                         Local = "https://short.url/",
-//                     }
-//                 }
-//             });
-//             _shortenService = new ShortenService(_hashGenerator, _settings, _dbContext);
-//         }
-//
-//         [Fact]
-//         public async Task Should_Make_Given_Url_Short_Successfully()
-//         {
-//             var originalUrl = new ShortenUrlRequest
-//             {
-//                 LongUrl = "https://example.com"
-//             };
-//             var expectedShortCode = _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
-//
-//             var result = await _shortenService.ToShortUrl(originalUrl, CancellationToken.None);
-//
-//             Assert.Equal($"{_settings.Value.UrlSettings.BaseUrls.Local}{expectedShortCode}", result);
-//         }
-//     }
-// }
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using Moq;
+using Shortener.Common.Models;
+using Shortener.Controllers.DTOs.Requests;
+using Shortener.Persistence;
+using Shortener.Services;
+using Testcontainers.MongoDb;
 
+namespace Tests;
+
+public class ShortenServiceTests : IClassFixture<BaseFixture>
+{
+    private readonly ShortenService _service;
+    private readonly Mock<IHashGenerator> _hashGeneratorMock = new();
+    private readonly Mock<IRedisCacheService> _redisMock = new();
+    private readonly ShortenerDbContext _dbContext;
+
+    public ShortenServiceTests(BaseFixture fixture)
+    {
+        _dbContext = fixture.CreateDatabase();
+
+        var settingsMock = new Mock<IOptions<AppSettings>>();
+        settingsMock.Setup(s => s.Value).Returns(new AppSettings
+        {
+            UrlSettings = new UrlSettings { BaseUrls = new BaseUrls { Gateway = "http://localhost:5255" } }
+        });
+
+        _service = new ShortenService(_hashGeneratorMock.Object, settingsMock.Object, _dbContext, _redisMock.Object);
+    }
+
+    [Fact]
+    public async Task ToShortUrl_Should_Return_ShortUrl()
+    {
+        // Arrange
+        var longUrl = "https://example.com";
+        var request = new ShortenUrlRequest { LongUrl = longUrl };
+        _hashGeneratorMock.Setup(h => h.GenerateShortCode(longUrl)).Returns("abc123");
+
+        // Act
+        var result = await _service.ToShortUrl(request, CancellationToken.None);
+
+        // Assert
+        Assert.Equal("http://localhost:5255/abc123", result);
+        Assert.Contains(await _dbContext.Urls.ToListAsync(), u => u.LongUrl == longUrl);
+    }
+
+    [Fact]
+    [Obsolete("Obsolete")]
+    public async Task RedirectToUrl_Should_Return_LongUrl_When_Cached()
+    {
+        // Arrange
+        var request = new RedirectRequest { Code = "abc123" };
+        var url = new Url { LongUrl = "https://example.com", ShortCode = "abc123" };
+        _redisMock.Setup(r => r.GetCacheValueAsync<Url>("abc123")).ReturnsAsync(url);
+
+        // Act
+        var result = await _service.RedirectToUrl(request, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(Uri.EscapeUriString("https://example.com"), result);
+    }
+
+    [Fact]
+    public async Task GetUrls_Should_Return_List_Of_Urls()
+    {
+        // Arrange
+        _dbContext.Urls.Add(new Url
+        {
+            LongUrl = "https://example.com", ShortCode = "abc123"
+        });
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var result = await _service.GetUrls(CancellationToken.None);
+
+        // Assert
+        Assert.Single(result);
+        Assert.Contains(result, u => u.LongUrl == "https://example.com");
+    }
+}
+
+public class BaseFixture : IAsyncLifetime
+{
+    private MongoDbContainer _mongoContainer = null!;
+    private ShortenerDbContext _dbContext = null!;
+
+    public async Task InitializeAsync()
+    {
+        _mongoContainer = new MongoDbBuilder()
+            .WithImage("docker.arvancloud.ir/mongo:latest")
+            .WithCleanUp(true)
+            .Build();
+        await _mongoContainer.StartAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _mongoContainer.DisposeAsync();
+        await _dbContext.DisposeAsync();
+    }
+
+    public ShortenerDbContext CreateDatabase()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<ShortenerDbContext>();
+        var connectionString = _mongoContainer.GetConnectionString();
+        optionsBuilder.UseMongoDB(connectionString, "Test_Db");
+
+        return new ShortenerDbContext(optionsBuilder.Options);
+    }
+}

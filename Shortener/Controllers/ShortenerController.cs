@@ -4,9 +4,7 @@ namespace Shortener.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-public class ShortenerController(
-    ShortenerDbContext dbContext,
-    IShortenService shortenService) : ControllerBase
+public class ShortenerController(IShortenService shortenService) : ControllerBase
 {
     [HttpPost("shorten")]
     public async Task<IActionResult> ShortenUrl(
