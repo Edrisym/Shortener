@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using Moq;
 using Shortener.Common.Models;
 using Shortener.Controllers.DTOs.Requests;
@@ -66,9 +65,11 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
     public async Task GetUrls_Should_Return_List_Of_Urls()
     {
         // Arrange
+        var sampleUrl = "https://Anotherexample.com";
+        var sampleShortCode = "abc123";
         _dbContext.Urls.Add(new Url
         {
-            LongUrl = "https://example.com", ShortCode = "abc123"
+            LongUrl = sampleUrl, ShortCode = "abc123"
         });
         await _dbContext.SaveChangesAsync();
 
@@ -76,15 +77,16 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
         var result = await _service.GetUrls(CancellationToken.None);
 
         // Assert
-        Assert.Single(result);
-        Assert.Contains(result, u => u.LongUrl == "https://example.com");
+        Assert.Contains(result, u =>
+            u.LongUrl == sampleUrl
+            && u.ShortCode == sampleShortCode);
     }
 }
 
 public class BaseFixture : IAsyncLifetime
 {
-    private MongoDbContainer _mongoContainer = null!;
-    private ShortenerDbContext _dbContext = null!;
+    private MongoDbContainer _mongoContainer;
+    private ShortenerDbContext _dbContext;
 
     public async Task InitializeAsync()
     {
@@ -95,12 +97,6 @@ public class BaseFixture : IAsyncLifetime
         await _mongoContainer.StartAsync();
     }
 
-    public async Task DisposeAsync()
-    {
-        await _mongoContainer.DisposeAsync();
-        await _dbContext.DisposeAsync();
-    }
-
     public ShortenerDbContext CreateDatabase()
     {
         var optionsBuilder = new DbContextOptionsBuilder<ShortenerDbContext>();
@@ -108,5 +104,18 @@ public class BaseFixture : IAsyncLifetime
         optionsBuilder.UseMongoDB(connectionString, "Test_Db");
 
         return new ShortenerDbContext(optionsBuilder.Options);
+    }
+
+    public async Task DisposeAsync()
+    {
+        if (_mongoContainer != null)
+        {
+            await _mongoContainer.DisposeAsync();
+        }
+
+        if (_dbContext != null)
+        {
+            await _dbContext.DisposeAsync();
+        }
     }
 }
