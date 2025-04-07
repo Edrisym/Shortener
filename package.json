@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "start": "cp scripts/pre-commit .git/hooks/ && chmod +x .git/hooks/pre-commit && echo 'hook copied'"
+  }
+}
+
