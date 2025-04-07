@@ -1,4 +1,4 @@
-namespace Shortener.Controllers.DTOs.Requests;
+namespace Shortener.Controllers.User.DTOs.Requests;
 
 public class RedirectRequest : IValidatableObject
 {

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shortener.Common.Models;
-using Shortener.Controllers.DTOs.Requests;
+using Shortener.Controllers.User.DTOs.Requests;
 using Shortener.Persistence;
 using Shortener.Services;
 

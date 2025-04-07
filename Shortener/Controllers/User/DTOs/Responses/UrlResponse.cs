@@ -1,4 +1,4 @@
-namespace Shortener.Controllers.DTOs.Responses;
+namespace Shortener.Controllers.User.DTOs.Responses;
 
 public record UrlResponse(
     [Required] string LongUrl,
