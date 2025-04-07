@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 namespace Shortener.Controllers.Admin;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/admin/[controller]")]
 [Authorize(Roles = "Admin")]
-public partial class ShortenerController : ControllerBase
+public partial class DashboardShortenerController() : ControllerBase
 {
+    
 }
