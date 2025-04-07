@@ -12,34 +12,14 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        ConfigureSerilog(builder);
+        builder.ConfigureSerilog();
         var settings = builder.ConfigureConfigurations();
-        builder.ConfigureDbContext(settings.DatabaseSettings);
+        builder.Services.ConfigureDbContext(settings.DatabaseSettings);
         builder.Services.ConfigureRedis(settings.DatabaseSettings.Redis);
         builder.Services.AddControllers();
         builder.Services.AddHttpContextAccessor();
-
-        #region CORS
-
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAll", policy =>
-            {
-                policy.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            });
-        });
-
-        #endregion
-
-        #region Registering services
-
-        builder.Services.AddScoped<IHashGenerator, HashGenerator>();
-        builder.Services.AddScoped<IShortenService, ShortenService>();
-
-        #endregion
-
+        builder.Services.RegisterServices();
+        builder.Services.ConfigureCors();
 
         var app = builder.Build();
 
@@ -50,8 +30,7 @@ public static class Program
 
         await app.RunAsync();
     }
-
-    static void ConfigureSerilog(WebApplicationBuilder builder)
+    static void ConfigureSerilog(this WebApplicationBuilder builder)
     {
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
@@ -77,7 +56,6 @@ public static class Program
 
         builder.Host.UseSerilog();
     }
-
     static AppSettings ConfigureConfigurations(this WebApplicationBuilder builder)
     {
         builder.Services.AddOptions();
@@ -87,18 +65,14 @@ public static class Program
         return builder.Configuration.GetSection("AppSettings").Get<AppSettings>() ??
                throw new Exception("Settings is not configured properly.");
     }
-
-    static void ConfigureDbContext(this WebApplicationBuilder builder,
-        DatabaseSettings settings)
+    static void ConfigureDbContext(this IServiceCollection services, DatabaseSettings settings)
     {
-        builder.Services.AddDbContext<ShortenerDbContext>(options =>
+        services.AddDbContext<ShortenerDbContext>(options =>
         {
             options.UseMongoDB(settings.ConnectionString, settings.DatabaseName);
         });
     }
-
-    private static void ConfigureRedis(this IServiceCollection services,
-        Redis settings)
+    private static void ConfigureRedis(this IServiceCollection services, Redis settings)
     {
         var connMultiplexer = ConnectionMultiplexer.Connect(settings.Configuration);
         services.AddSingleton<IConnectionMultiplexer>(connMultiplexer);
@@ -110,5 +84,22 @@ public static class Program
             options.InstanceName = settings.InstanceName;
             options.ConnectionMultiplexerFactory = async () => await Task.FromResult(connMultiplexer);
         });
+    }
+    static void ConfigureCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+    }
+    static void RegisterServices(this IServiceCollection service)
+    {
+        service.AddScoped<IHashGenerator, HashGenerator>();
+        service.AddScoped<IShortenService, ShortenService>();
     }
 }
