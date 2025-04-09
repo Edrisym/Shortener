@@ -8,20 +8,12 @@ namespace Shortener.Controllers.Dev;
 // [Authorize(Roles = "Developer")]
 public class DevController(IConnectionMultiplexer redis) : ControllerBase
 {
-    private readonly IDatabase _redisDatabase = redis.GetDatabase();
-
     [HttpPost("clear-cache")]
     public async Task<IActionResult> ClearCacheAsync()
     {
         try
         {
-            var endpoints = _redisDatabase.Multiplexer.GetEndPoints();
-            foreach (var endpoint in endpoints)
-            {
-                var server = _redisDatabase.Multiplexer.GetServer(endpoint);
-                await server.FlushAllDatabasesAsync();
-            }
-
+            await redis.GetDatabase().ExecuteAsync("FLUSHDB");
             return Ok("Cache cleared successfully.");
         }
         catch (Exception ex)
