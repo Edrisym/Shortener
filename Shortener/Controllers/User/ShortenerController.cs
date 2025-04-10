@@ -1,10 +1,9 @@
-//using Microsoft.AspNetCore.Authorization;
 using Shortener.Services;
 
 namespace Shortener.Controllers.User;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/shortener/[controller]")]
 public class ShortenerController(IShortenService shortenService) : ControllerBase
 {
     [HttpPost("shorten")]
@@ -37,22 +36,5 @@ public class ShortenerController(IShortenService shortenService) : ControllerBas
             return NotFound("No URL is found");
 
         return Redirect(longUrl!);
-    }
-
-    [HttpGet]
-    // [Authorize(Roles = "Admin")]
-    public async Task<List<UrlResponse>> GetUrls(
-        CancellationToken cancellationToken)
-    {
-        return await shortenService.GetUrls(cancellationToken);
-    }
-
-    // [Authorize(Roles = "Admin")]
-    [HttpGet("{id}")]
-    public async Task<UrlResponse?> GetUrl(
-        string id,
-        CancellationToken cancellationToken)
-    {
-        return await shortenService.GetUrl(id, cancellationToken);
     }
 }
