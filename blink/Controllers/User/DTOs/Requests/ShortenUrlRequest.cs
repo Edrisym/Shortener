@@ -8,8 +8,7 @@ public class ShortenUrlRequest : IValidatableObject
     {
         if (!LongUrl.IsUrlValid())
             throw new InvalidOperationException(
-                "The provided longUrl is not valid. Please ensure it is a properly formatted URL.",
-                new Exception(nameof(LongUrl)));
+                "The provided longUrl is not valid. Please ensure it is a properly formatted URL.");
 
         yield break;
     }

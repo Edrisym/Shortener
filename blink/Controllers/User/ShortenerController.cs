@@ -9,14 +9,9 @@ public class ShortenerController(IShortenService shortenService) : ControllerBas
 {
     [HttpPost("shorten")]
     public async Task<IActionResult> ShortenUrl(
-        [FromQuery] string longUrl,
+        [FromBody] ShortenUrlRequest request,
         CancellationToken cancellationToken)
     {
-        var request = new ShortenUrlRequest
-        {
-            LongUrl = longUrl
-        };
-
         var result = await shortenService.ToShortUrl(request, cancellationToken);
         return Ok(new { LongUrl = result });
     }
