@@ -10,8 +10,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.1" />
+        <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.2" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.2" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.1" />
         <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
         <PackageReference Include="prometheus-net" Version="8.2.1" />
         <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="2.1.2" />
@@ -21,6 +26,8 @@
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
         <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
         <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
+        <PackageReference Include="SharpAbp.Abp.OpenTelemetry.Exporter.Otlp" Version="4.1.6" />
         <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.14" />
 

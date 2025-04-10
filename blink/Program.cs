@@ -1,9 +1,11 @@
 using blink.Common;
-using blink.Common.Models;
-using blink.Persistence;
 using blink.Services;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Formatting.Compact;
+using Serilog.Sinks.Grafana.Loki;
 using StackExchange.Redis;
 
 namespace blink;
@@ -22,6 +24,7 @@ public static class Program
             .RegisterServices()
             .AddHttpContextAccessor()
             .ConfigureCors()
+            .ConfigureOpenTelemetry()
             .AddControllers();
 
         var app = builder.Build();
@@ -36,11 +39,21 @@ public static class Program
 
     static WebApplicationBuilder ConfigureSerilog(this WebApplicationBuilder builder)
     {
+        //TODO clean this 
+
+        var labels = new List<LokiLabel>
+        {
+            new() { Key = "app", Value = "BlinkUrl" },
+            // new() { Key = "env", Value = "production" },
+            // new() { Key = "env", Value = "development" }
+        };
+
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Enrich.WithClientIp()
             .Enrich.WithCorrelationId()
-            .Enrich.WithProperty("Application", "URL blink")
+            .Enrich.WithProperty("Service", "BlinkUrl")
+            .Enrich.With<OpenTelemetryLogEnricher>()
             .Enrich.WithRequestHeader(GatewayHeaders.UserId)
             .Enrich.WithRequestHeader(GatewayHeaders.Agent)
             .Enrich.WithRequestHeader(GatewayHeaders.Referer)
@@ -49,7 +62,9 @@ public static class Program
             .Enrich.WithThreadId()
             .Enrich.WithThreadName()
             .WriteTo.Console(new RenderedCompactJsonFormatter())
-            .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+            // .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.GrafanaLoki("http://localhost:3100", labels)
+
             //TODO: add to elastic and remove file logging after testing
             // .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
             // {
@@ -96,7 +111,7 @@ public static class Program
         return services;
     }
 
-    static IServiceCollection ConfigureCors(this IServiceCollection services)
+    private static IServiceCollection ConfigureCors(this IServiceCollection services)
     {
         services.AddCors(options =>
         {
@@ -110,11 +125,38 @@ public static class Program
         return services;
     }
 
-    static IServiceCollection RegisterServices(this IServiceCollection service)
+    private static IServiceCollection RegisterServices(this IServiceCollection service)
     {
         service.AddScoped<IHashGenerator, HashGenerator>()
             .AddScoped<IShortenService, ShortenService>()
             .AddScoped<IAnalyticService, AnalyticService>();
+        return service;
+    }
+
+    private static IServiceCollection ConfigureOpenTelemetry(this IServiceCollection service)
+    {
+        service.AddOpenTelemetry()
+            .ConfigureResource(resource => resource
+                .AddService("BlinkUrl")
+                .AddAttributes(new[]
+                {
+                    new KeyValuePair<string, object>("environment", "production"),
+                    new KeyValuePair<string, object>("environment", "development"),
+                }))
+            .WithTracing(tracing => tracing
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                // .AddSqlClientInstrumentation()
+                .AddSource("BlinkUrl")
+                // .AddConsoleExporter())
+                .AddOtlpExporter())
+            .WithMetrics(metrics => metrics
+                .AddRuntimeInstrumentation()
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                // .AddConsoleExporter())
+                .AddOtlpExporter());
+
         return service;
     }
 }
