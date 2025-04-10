@@ -51,10 +51,15 @@ function App() {
     setError('');
 
     try {
-      // Based on your API gateway, we need to POST to /{longUrl}
-      const encodedUrl = encodeURIComponent(longUrl);
-      const response = await fetch(`${baseUrl}/${encodedUrl}`, {
+      // const encodedUrl = encodeURIComponent(longUrl);
+      const response = await fetch(`${baseUrl}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+          longUrl: longUrl,
+        }),
       });
 
       if (!response.ok) {
@@ -115,7 +120,7 @@ function App() {
       <div className="url-shortener-card">
         {/* Header */}
         <div className="header">
-          <h1 className="title">LinkSnip</h1>
+          <h1 className="title">BLink</h1>
           <p className="subtitle">Transform your long URLs into short, shareable links</p>
         </div>
 
