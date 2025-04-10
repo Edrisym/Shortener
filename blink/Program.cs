@@ -113,7 +113,8 @@ public static class Program
     static IServiceCollection RegisterServices(this IServiceCollection service)
     {
         service.AddScoped<IHashGenerator, HashGenerator>()
-            .AddScoped<IShortenService, ShortenService>();
+            .AddScoped<IShortenService, ShortenService>()
+            .AddScoped<IAnalyticService, AnalyticService>();
         return service;
     }
 }
