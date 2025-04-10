@@ -1,4 +1,4 @@
-using MongoDB.EntityFrameworkCore.Extensions;
+using Shortener.Persistence.Configurations;
 
 namespace Shortener.Persistence
 {
