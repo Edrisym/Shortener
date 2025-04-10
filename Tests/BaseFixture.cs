@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Shortener.Persistence;
+using blink.Persistence;
 using Testcontainers.MongoDb;
 
 namespace Tests;

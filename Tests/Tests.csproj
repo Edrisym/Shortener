@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Shortener\Shortener.csproj" />
+      <ProjectReference Include="..\blink\blink.csproj" />
     </ItemGroup>
 
 </Project>

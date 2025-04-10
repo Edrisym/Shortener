@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
-using Shortener.Common.Models;
-using Shortener.Controllers.User.DTOs.Requests;
-using Shortener.Persistence;
-using Shortener.Services;
+using blink.Common.Models;
+using blink.Controllers.User.DTOs.Requests;
+using blink.Persistence;
+using blink.Services;
 
 namespace Tests;
 
@@ -50,7 +50,7 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
     {
         // Arrange
         var request = new RedirectRequest { Code = "abc123" };
-        var url = new Url { LongUrl = "https://example.com", ShortCode = "abc123" };
+        var url = new Url(longUrl: "https://example.com", shortCode: "abc123");
         _redisMock.Setup(r => r.GetCacheValueAsync<Url>("abc123")).ReturnsAsync(url);
 
         // Act
@@ -66,10 +66,8 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
         // Arrange
         var sampleUrl = "https://Anotherexample.com";
         var sampleShortCode = "abc123";
-        _dbContext.Urls.Add(new Url
-        {
-            LongUrl = sampleUrl, ShortCode = "abc123"
-        });
+        
+        _dbContext.Urls.Add(new Url(longUrl: sampleUrl, shortCode: sampleShortCode));
         await _dbContext.SaveChangesAsync();
 
         // Act

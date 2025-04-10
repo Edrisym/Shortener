@@ -1,0 +1,12 @@
+global using System.ComponentModel.DataAnnotations;
+global using Microsoft.AspNetCore.Mvc;
+global using blink.WebApplicationExtensions;
+global using System.Text.RegularExpressions;
+global using Microsoft.EntityFrameworkCore;
+global using blink.Persistence;
+global using blink.Common.Models;
+global using System.Security.Cryptography;
+global using System.Text;
+global using Microsoft.Extensions.Options;
+global using blink.Controllers.User.DTOs.Requests;
+global using blink.Controllers.User.DTOs.Responses;
