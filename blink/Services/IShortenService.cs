@@ -22,9 +22,8 @@ public class ShortenService(
     {
         var shortCode = hashGenerator.GenerateShortCode(request.LongUrl);
         var shortUrl = $"{_settings.BaseUrls.Gateway}/{shortCode}";
-        if (await UrlExists(shortCode, request.LongUrl, cancellationToken))
+        if (await UrlExists(shortCode, cancellationToken))
             return shortUrl;
-
 
         var url = new Url
         (
@@ -51,15 +50,15 @@ public class ShortenService(
         if (url is null)
             return default;
 
+        //TODO
+        // if (DateTime.UtcNow > url.ExpiresAt)
+        //     throw new Exception("The Code is Expired. Try shortening the URL again.");
+
         await redis.SetCacheValueAsync(request.Code, url, expiration: TimeSpan.FromSeconds(60));
         await redis.PersistAndIncrementCounterAsync(url.ShortCode);
 
         // TODO: find an alternative
         return Uri.EscapeUriString(url.LongUrl);
-
-        //TODO
-        // if (DateTime.UtcNow > url.ExpiresAt)
-        //     throw new Exception("The Code is Expired. Try shortening the URL again.");
     }
 
     public async Task<List<UrlResponse>> GetUrls(
@@ -82,11 +81,9 @@ public class ShortenService(
 
     private async Task<bool> UrlExists(
         string code,
-        string longUrl,
         CancellationToken cancellationToken)
     {
         return await dbContext.Urls
-            .AnyAsync(url => url.ShortCode == code
-                             && url.LongUrl == longUrl, cancellationToken);
+           .AnyAsync(url => url.ShortCode == code, cancellationToken);
     }
 }
