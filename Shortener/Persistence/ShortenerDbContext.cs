@@ -8,33 +8,45 @@ namespace Shortener.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Url>(c =>
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UrlConfigurations).Assembly);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            try
             {
-                c.ToCollection("Urls");
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-                c.HasKey(u => u.Id);
-                c.Property(u => u.Id)
-                    .IsRequired()
-                    .HasMaxLength(36);
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            }
+            catch (DbUpdateException e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
 
-                c.Property(u => u.LongUrl)
-                    .IsRequired()
-                    .HasMaxLength(2048);
-
-                c.Property(u => u.ShortCode)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                c.Property(u => u.CreatedAt)
-                    .IsRequired();
-
-                c.Property(u => u.ExpiresAt)
-                    .IsRequired();
-
-                c.HasIndex(u => u.ShortCode)
-                    .IsUnique()
-                    .IsDescending();
-            });
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbUpdateException e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }
