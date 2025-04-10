@@ -5,7 +5,7 @@ using blink.Services;
 namespace blink.Controllers.User;
 
 [ApiController]
-[Route("api/v1/shortener/[controller]")]
+[Route("api/v1/blink/[controller]")]
 public class AnalyticsController(IAnalyticService service) : ControllerBase
 {
     [HttpGet]
