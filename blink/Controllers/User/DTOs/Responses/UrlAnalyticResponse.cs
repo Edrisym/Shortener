@@ -6,5 +6,5 @@ public sealed class UrlAnalyticResponse
     public string ShortCode { get; set; }
     public string CraatedBy { get; set; }
     public IReadOnlyCollection<string> ViewedBy { get; set; }
-    public int ViewCount { get; set; }
+    public int VisitCount { get; set; }
 }
