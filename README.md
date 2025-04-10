@@ -1,7 +1,7 @@
-# Shortener
+# Blink
 
 ## Overview
-Shortener is a high-performance, easy-to-use, and free URL shortening service built with **.NET Core**, **MongoDB**, **Redis**, and **YARP Reverse Proxy**. It allows users to create and manage short URLs, track click statistics, and integrate seamlessly with other applications through a RESTful API. This solution is perfect for anyone needing a reliable, self-hosted URL shortener with advanced monitoring and logging.
+Blink is a high-performance, easy-to-use, and free URL shortening service built with **.NET Core**, **MongoDB**, **Redis**, and **YARP Reverse Proxy**. It allows users to create and manage short URLs, track click statistics, and integrate seamlessly with other applications through a RESTful API. This solution is perfect for anyone needing a reliable, self-hosted URL shortener with advanced monitoring and logging.
 
 ## Features
 ✅ **Fast URL Shortening** – Uses Redis for quick access and caching.    
@@ -34,8 +34,8 @@ Shortener is a high-performance, easy-to-use, and free URL shortening service bu
 
 ### Clone the Repository
 ```sh
- git clone https://github.com/Edrisym/Shortener.git
- cd Shortener
+ git clone https://github.com/Edrisym/Blink.git
+ cd Blink
 ```
 
 ### Configure Redis
