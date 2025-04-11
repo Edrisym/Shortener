@@ -1,6 +1,5 @@
 using blink.Common;
 using blink.Services;
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -35,6 +34,7 @@ public static class Program
         app.UseCors("AllowAll");
         app.UseRouting();
         app.MapControllers();
+        app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
         await app.RunAsync();
     }
@@ -137,36 +137,33 @@ public static class Program
 
     private static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
     {
-        var openTelemetry = builder.Services.AddOpenTelemetry();
+        var openTelemetry = builder.Services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource
+                .AddService(serviceName: builder.Environment.ApplicationName)
+                .AddAttributes(new Dictionary<string, object>
+                {
+                    ["deployment.environment"] = builder.Environment.EnvironmentName.ToLower(),
+                    ["service.instance.id"] = Environment.MachineName,
+                    ["host.name"] = Environment.MachineName,
+                    ["telemetry.sdk.language"] = "dotnet"
+                }));
 
-// 🔧 Identify your service clearly and add useful attributes
-        openTelemetry.ConfigureResource(resource => resource
-            .AddService(serviceName: builder.Environment.ApplicationName)
-            .AddAttributes(new Dictionary<string, object>
-            {
-                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLower(),
-                ["service.instance.id"] = Environment.MachineName,
-                ["host.name"] = Environment.MachineName,
-                ["telemetry.sdk.language"] = "dotnet"
-            }));
-
-// 📊 METRICS
         openTelemetry.WithMetrics(metrics =>
         {
             metrics
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation() // CPU, GC, threads, allocations
-                // .AddProcessInstrumentation() // Working set, CPU time, handle count
-                .AddMeter(builder.Environment.ApplicationName); // App-specific meters
+                .AddRuntimeInstrumentation()
+                .AddProcessInstrumentation()
+                .AddMeter(builder.Environment.ApplicationName);
 
-            if (builder.Environment.IsDevelopment())
-                metrics.AddConsoleExporter();
-            else
-                metrics.AddOtlpExporter(); // Use OTLP for Grafana Cloud, Tempo, etc.
+            // if (builder.Environment.IsDevelopment())
+                // metrics.AddConsoleExporter();
+                metrics.AddPrometheusExporter(options => { options.ScrapeEndpointPath = "/metrics"; });
+            // else
+            //     metrics.AddOtlpExporter();
         });
 
-// 🔍 TRACING
         openTelemetry.WithTracing(tracing =>
         {
             tracing
@@ -175,13 +172,17 @@ public static class Program
                     options.RecordException = true;
                     options.Filter = _ => true;
                 })
-                .AddHttpClientInstrumentation();
-                // .AddMongoDBInstrumentation(mongo => { mongo.SetDbStatementForText = true; });
+                .AddHttpClientInstrumentation()
+                .AddRedisInstrumentation();
 
-            if (builder.Environment.IsDevelopment())
-                tracing.AddConsoleExporter();
-            else
-                tracing.AddOtlpExporter();
+            // if (builder.Environment.IsDevelopment())
+                // tracing.AddConsoleExporter();
+            // else
+                // tracing.AddOtlpExporter();
+
+            // if (!builder.Environment.IsDevelopment())
+            //     openTelemetry.UseOtlpExporter(OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf,
+            //         new Uri(settings.OpenTelemetrySettings.ExporterUrl));
         });
     }
 }
