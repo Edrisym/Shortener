@@ -1,5 +1,6 @@
 using blink.Common;
 using blink.Services;
+using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -17,6 +18,8 @@ public static class Program
         var builder = WebApplication.CreateBuilder(args)
             .ConfigureSerilog();
 
+        builder.ConfigureOpenTelemetry();
+
         var settings = builder.ConfigureConfigurations();
 
         builder.Services.ConfigureDbContext(settings.DatabaseSettings)
@@ -24,7 +27,6 @@ public static class Program
             .RegisterServices()
             .AddHttpContextAccessor()
             .ConfigureCors()
-            .ConfigureOpenTelemetry()
             .AddControllers();
 
         var app = builder.Build();
@@ -63,7 +65,7 @@ public static class Program
             .Enrich.WithThreadName()
             .WriteTo.Console(new RenderedCompactJsonFormatter())
             // .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
-            .WriteTo.GrafanaLoki("http://localhost:3100", labels)
+            // .WriteTo.GrafanaLoki("http://localhost:3100", labels)
 
             //TODO: add to elastic and remove file logging after testing
             // .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
@@ -133,30 +135,53 @@ public static class Program
         return service;
     }
 
-    private static IServiceCollection ConfigureOpenTelemetry(this IServiceCollection service)
+    private static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
     {
-        service.AddOpenTelemetry()
-            .ConfigureResource(resource => resource
-                .AddService("BlinkUrl")
-                .AddAttributes(new[]
-                {
-                    new KeyValuePair<string, object>("environment", "production"),
-                    new KeyValuePair<string, object>("environment", "development"),
-                }))
-            .WithTracing(tracing => tracing
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                // .AddSqlClientInstrumentation()
-                .AddSource("BlinkUrl")
-                // .AddConsoleExporter())
-                .AddOtlpExporter())
-            .WithMetrics(metrics => metrics
-                .AddRuntimeInstrumentation()
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                // .AddConsoleExporter())
-                .AddOtlpExporter());
+        var openTelemetry = builder.Services.AddOpenTelemetry();
 
-        return service;
+// 🔧 Identify your service clearly and add useful attributes
+        openTelemetry.ConfigureResource(resource => resource
+            .AddService(serviceName: builder.Environment.ApplicationName)
+            .AddAttributes(new Dictionary<string, object>
+            {
+                ["deployment.environment"] = builder.Environment.EnvironmentName.ToLower(),
+                ["service.instance.id"] = Environment.MachineName,
+                ["host.name"] = Environment.MachineName,
+                ["telemetry.sdk.language"] = "dotnet"
+            }));
+
+// 📊 METRICS
+        openTelemetry.WithMetrics(metrics =>
+        {
+            metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation() // CPU, GC, threads, allocations
+                // .AddProcessInstrumentation() // Working set, CPU time, handle count
+                .AddMeter(builder.Environment.ApplicationName); // App-specific meters
+
+            if (builder.Environment.IsDevelopment())
+                metrics.AddConsoleExporter();
+            else
+                metrics.AddOtlpExporter(); // Use OTLP for Grafana Cloud, Tempo, etc.
+        });
+
+// 🔍 TRACING
+        openTelemetry.WithTracing(tracing =>
+        {
+            tracing
+                .AddAspNetCoreInstrumentation(options =>
+                {
+                    options.RecordException = true;
+                    options.Filter = _ => true;
+                })
+                .AddHttpClientInstrumentation();
+                // .AddMongoDBInstrumentation(mongo => { mongo.SetDbStatementForText = true; });
+
+            if (builder.Environment.IsDevelopment())
+                tracing.AddConsoleExporter();
+            else
+                tracing.AddOtlpExporter();
+        });
     }
 }
