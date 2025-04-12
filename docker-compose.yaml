@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./blink
+      dockerfile: Dockerfile
+    container_name: blink_container
+    ports:
+      - "4545:8080"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - ConnectionStrings__PostgreSql=Host=mongodb;Port=27017;Database=blinkDb
+      - AppSettings__Redis__Configuration=redis:6379,abortConnect=false
+      - AppSettings__Redis__InstanceName=BlinkCacheInstance
+      - AppSettings__DatabaseSettings__ConnectionString=mongodb://mongodb:27017
+      - AppSettings__DatabaseSettings__DatabaseName=blinkDb
+      - AppSettings__DatabaseSettings__Collections__ShortenerCollection=url
+      - ASPNETCORE_ENVIRONMENT=Local
+    restart: always
+
+  gateway:
+    build:
+      context: .
+      dockerfile: SharpYarp/Dockerfile
+    container_name: sharp_yarp_gateway
+    ports:
+      - "4444:8080" 
+    depends_on:
+      - api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+    restart: always
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  mongodata:
+  redisdata:

@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Figgle" Version="0.5.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.1" />

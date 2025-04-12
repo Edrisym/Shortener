@@ -1,5 +1,6 @@
 using blink.Common;
 using blink.Services;
+using Figgle;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -14,8 +15,17 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
+        Console.WriteLine(FiggleFonts.Standard.Render("Blink Url Shortener"));
         var builder = WebApplication.CreateBuilder(args)
             .ConfigureSerilog();
+
+        builder.Configuration
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+            .AddEnvironmentVariables();
+
+        Console.WriteLine("app is running on {0}", builder.Environment.EnvironmentName);
 
         builder.ConfigureOpenTelemetry();
 
@@ -108,6 +118,8 @@ public static class Program
         {
             options.Configuration = settings.Configuration;
             options.InstanceName = settings.InstanceName;
+            Console.WriteLine("----{0}", settings.InstanceName);
+            Console.WriteLine("----{0}", settings.Configuration);
             options.ConnectionMultiplexerFactory = async () => await Task.FromResult(connMultiplexer);
         });
         return services;
@@ -158,8 +170,8 @@ public static class Program
                 .AddMeter(builder.Environment.ApplicationName);
 
             // if (builder.Environment.IsDevelopment())
-                // metrics.AddConsoleExporter();
-                metrics.AddPrometheusExporter(options => { options.ScrapeEndpointPath = "/metrics"; });
+            // metrics.AddConsoleExporter();
+            metrics.AddPrometheusExporter(options => { options.ScrapeEndpointPath = "/metrics"; });
             // else
             //     metrics.AddOtlpExporter();
         });
@@ -176,9 +188,9 @@ public static class Program
                 .AddRedisInstrumentation();
 
             // if (builder.Environment.IsDevelopment())
-                // tracing.AddConsoleExporter();
+            // tracing.AddConsoleExporter();
             // else
-                // tracing.AddOtlpExporter();
+            // tracing.AddOtlpExporter();
 
             // if (!builder.Environment.IsDevelopment())
             //     openTelemetry.UseOtlpExporter(OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf,

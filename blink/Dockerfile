@@ -7,17 +7,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Blink/Blink.csproj", "Blink/"]
-RUN dotnet restore "Blink/Blink.csproj"
+COPY ["blink/blink.csproj", "blink/"]
+RUN dotnet restore "blink/blink.csproj"
 COPY . .
-WORKDIR "/src/Shortener"
-RUN dotnet build "Blink.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/blink"
+RUN dotnet build "blink.csproj" -c Release -o /app/build
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Blink.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "blink.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Blink.dll"]
+ENTRYPOINT ["dotnet", "blink.dll"]

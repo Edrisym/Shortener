@@ -6,13 +6,14 @@
     <projectFile profileName="http">Shortener/Shortener.csproj</projectFile>
     <projectFile profileName="https">Shortener/Shortener.csproj</projectFile>
     <projectFile profileName="UI">UI/UI.csproj</projectFile>
+    <projectFile profileName="http">blink/blink.csproj</projectFile>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2bd131aa-b64f-4b1f-afa5-bec219425a44" name="Changes" comment="adding DashboardShortenerController">
-      <change beforePath="$PROJECT_DIR$/SharpYarp/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharpYarp/Program.cs" afterDir="false" />
+    <list default="true" id="2bd131aa-b64f-4b1f-afa5-bec219425a44" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Edrisym.Shortener/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Edrisym.Shortener/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,20 +32,21 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Common/Models/AppSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Controllers/Admin/ShortenerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Controllers/User/ShortenerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Controllers/User/ShortenerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/GlobalUsing.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/GlobalUsing.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Shortener/Services/IShortenService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Shortener/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Tests/Shorten_Service_Tests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Tests/Shorten_Service_Tests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Tests/Shorten_Service_Tests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/Tests/Shorten_Service_Tests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/SharpYarp/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/AnalyticsController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/AnalyticsController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/AnalyticsController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/DTOs/Requests/ShortenUrlRequest.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/DTOs/Responses/UrlAnalyticResponse.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Controllers/User/ShortenerController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Services/IAnalyticService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Services/IRedisCacheService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Services/IShortenService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Services/IShortenService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/edrisym/Desktop/RiderProjects/Edrisym.Shortener/blink/Services/IShortenService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/blink/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/101339a8e9a14fb58a56242050f9320732200/25/45448c63/02000006.il" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0308d995074f4663b87ab86169c72b7d20600/86/4039951d/OptionsServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0308d995074f4663b87ab86169c72b7d20600/f2/c595875a/IOptions`1.cs" root0="SKIP_HIGHLIGHTING" />
@@ -60,6 +62,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/18f8ea476e7b40658bbc34407490d15b4ba8/5e/ade36f40/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2247f476efe54591b3df30368dffba797c000/84/3906ac97/ReferenceList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2659ef925102457eb4c89126e7d8a8d72800/a2/8dc3b682/RenderedCompactJsonFormatter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2be45397f5214279afad95b62e4c73bf4000/d6/105c89ab/SerilogApplicationBuilderExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2debbda2061540439955a52d5e9a2d4edfe00/d3/b7da4b98/IConnectionMultiplexer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/30223890bfb34a74b8aabde564032509219600/e4/79484944/ActionResult`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/30223890bfb34a74b8aabde564032509219600/f1/67ecdba4/ControllerBase.cs" root0="SKIP_HIGHLIGHTING" />
@@ -83,6 +86,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7e63dbbad87e475d8c1d942fcf5a6ea26c00/27/4c8bad28/Blake2B.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7fb9fd23948c42bc845b4910017fd35ebdc0/f1/ea7e3afb/Program.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89c7aa528a1f4cc29c8dd046536cdbb655200/0e/1d5a7d87/IEndpointFilter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89c7aa528a1f4cc29c8dd046536cdbb655200/14/5f176b92/QueryString.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89c7aa528a1f4cc29c8dd046536cdbb655200/1a/785d3812/EndpointFilterInvocationContext.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89c7aa528a1f4cc29c8dd046536cdbb655200/1e/7e6887b4/StatusCodes.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/89c7aa528a1f4cc29c8dd046536cdbb655200/af/f474e376/HttpRequest.cs" root0="SKIP_HIGHLIGHTING" />
@@ -104,6 +108,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/8a/3bc781b4/ArgumentNullException.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/90/f0a361ba/Task`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/9e/0915776a/TaskAwaiter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/b4/f2b11713/Task.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/b7/f830e6d8/StringComparison.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/c3/51ac7ad4/WebUtility.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a0741529c8554d199992ef9e50684668d82800/dc/afbb8db8/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
@@ -127,6 +132,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d011469f23974b50b9fd1b7940cc6bc73fa00/59/28ffc3cd/Uri.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d011469f23974b50b9fd1b7940cc6bc73fa00/9f/5a758f7d/UriKind.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d14e4e4366994ac7b734697b6d28777cec00/5d/4827b819/ForwardedHeadersExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d7b02bfba56440bc90ea9bb382ca788e5a00/a7/c31e5204/MvcServiceCollectionExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d972ab6b1f8f448e8977ce0647bdbc8676000/65/6b917512/UserValidator`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e86f7af408d9469eba259b12ebd77d3d9d28/aa/9fc5bf21/RedisCacheOptions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e947d92388f44f84bcf87bb92b8c10a212000/23/4ac90eaf/ConfigurationBinder.cs" root0="SKIP_HIGHLIGHTING" />
@@ -174,6 +180,7 @@
     ".NET Launch Settings Profile.Shortener: http.executor": "Run",
     ".NET Launch Settings Profile.Shortener: https.executor": "Run",
     ".NET Launch Settings Profile.UI.executor": "Run",
+    ".NET Launch Settings Profile.blink: http.executor": "Run",
     ".NET Project.Shortener.executor": "Run",
     "0c945f1d-d329-4f1e-aa91-e23584de3eb5.executor": "Debug",
     "8269f2ea-7375-49f9-b666-50a1c77b52e4.executor": "Debug",
@@ -202,10 +209,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected="Multi-Launch.Multi-Launch: Edrisym.Shortener">
-    <configuration name="Shortener | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/Shortener/Shortener.http" requestIdentifier="#1" runType="Run single request">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Multi-Launch.Multi-Launch: Blink.Shortener">
     <configuration name="SharpYarp: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/SharpYarp/SharpYarp.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
@@ -236,8 +240,8 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="Shortener: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile" temporary="true">
-      <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Shortener/Shortener.csproj" />
+    <configuration name="blink: http" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
+      <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/blink/blink.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
       <option name="LAUNCH_PROFILE_NAME" value="http" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
@@ -251,7 +255,7 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="Multi-Launch: Edrisym.Shortener" type="com.intellij.execution.configurations.multilaunch" factoryName="MultiLaunchConfiguration">
+    <configuration name="Multi-Launch: Blink.Shortener" type="com.intellij.execution.configurations.multilaunch" factoryName="MultiLaunchConfiguration">
       <rows>
         <ExecutableRowSnapshot>
           <option name="condition">
@@ -273,32 +277,11 @@
           </option>
           <option name="executable">
             <ExecutableSnapshot>
-              <option name="id" value="runConfig:.NET Launch Settings Profile.Shortener: http" />
+              <option name="id" value="runConfig:.NET Launch Settings Profile.blink: http" />
             </ExecutableSnapshot>
           </option>
         </ExecutableRowSnapshot>
       </rows>
-      <method v="2" />
-    </configuration>
-    <configuration name="SharpYarp/Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
-      <deployment type="dockerfile">
-        <settings>
-          <option name="imageTag" value="sharpyarp" />
-          <option name="containerName" value="sharpyarp" />
-          <option name="contextFolderPath" value="$PROJECT_DIR$" />
-          <option name="portBindings">
-            <list>
-              <DockerPortBindingImpl>
-                <option name="containerPort" value="8080" />
-                <option name="hostIp" value="127.0.0.1" />
-                <option name="hostPort" value="8080" />
-              </DockerPortBindingImpl>
-            </list>
-          </option>
-          <option name="sourceFilePath" value="SharpYarp/Dockerfile" />
-        </settings>
-      </deployment>
-      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
@@ -315,12 +298,6 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue=".NET Launch Settings Profile.Shortener: http" />
-        <item itemvalue="HTTP Request.Shortener | #1" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -380,94 +357,6 @@
       <workItem from="1743607300168" duration="14097000" />
       <workItem from="1743687645649" duration="11008000" />
       <workItem from="1744044264301" duration="7593000" />
-    </task>
-    <task id="LOCAL-00076" summary="decoupling hash generator">
-      <option name="closed" value="true" />
-      <created>1742972776892</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1742972776893</updated>
-    </task>
-    <task id="LOCAL-00077" summary="removed slash from base-url in appsettings">
-      <option name="closed" value="true" />
-      <created>1742974612209</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1742974612210</updated>
-    </task>
-    <task id="LOCAL-00078" summary="registering hashgenerator to the pipeline">
-      <option name="closed" value="true" />
-      <created>1742974640165</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1742974640165</updated>
-    </task>
-    <task id="LOCAL-00079" summary="modified test">
-      <option name="closed" value="true" />
-      <created>1742974665086</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1742974665086</updated>
-    </task>
-    <task id="LOCAL-00080" summary="wrong configuration">
-      <option name="closed" value="true" />
-      <created>1742974806249</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1742974806249</updated>
-    </task>
-    <task id="LOCAL-00081" summary="removing wrong configuration for id">
-      <option name="closed" value="true" />
-      <created>1742974813738</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1742974813738</updated>
-    </task>
-    <task id="LOCAL-00082" summary="registering db context in the pipelinie instead of extension method">
-      <option name="closed" value="true" />
-      <created>1742978677744</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1742978677744</updated>
-    </task>
-    <task id="LOCAL-00083" summary="craeting ShortenerEndpoints for minimal apis">
-      <option name="closed" value="true" />
-      <created>1742978690919</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1742978690919</updated>
-    </task>
-    <task id="LOCAL-00084" summary="noting important">
-      <option name="closed" value="true" />
-      <created>1742979676592</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1742979676592</updated>
-    </task>
-    <task id="LOCAL-00085" summary="adding complete url after base url">
-      <option name="closed" value="true" />
-      <created>1742980409767</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1742980409767</updated>
-    </task>
-    <task id="LOCAL-00086" summary="removing api result pattern">
-      <option name="closed" value="true" />
-      <created>1742980523787</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1742980523787</updated>
     </task>
     <task id="LOCAL-00087" summary="remove routing middleware">
       <option name="closed" value="true" />
@@ -773,7 +662,95 @@
       <option name="project" value="LOCAL" />
       <updated>1744050506084</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="registring IAnalyticService">
+      <option name="closed" value="true" />
+      <created>1744290122073</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290122073</updated>
+    </task>
+    <task id="LOCAL-00126" summary="renaming prop in UrlAnalyticResponse &#10;ViewCount -&gt; VisitCount">
+      <option name="closed" value="true" />
+      <created>1744290148216</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290148217</updated>
+    </task>
+    <task id="LOCAL-00127" summary="getting the view and Analytics based on user">
+      <option name="closed" value="true" />
+      <created>1744290187132</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290187132</updated>
+    </task>
+    <task id="LOCAL-00128" summary="renaming instance name to blink">
+      <option name="closed" value="true" />
+      <created>1744290204040</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290204040</updated>
+    </task>
+    <task id="LOCAL-00129" summary="adding blink to route in controller">
+      <option name="closed" value="true" />
+      <created>1744290225439</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290225439</updated>
+    </task>
+    <task id="LOCAL-00130" summary=".">
+      <option name="closed" value="true" />
+      <created>1744290229183</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290229184</updated>
+    </task>
+    <task id="LOCAL-00131" summary="removing longUrl from query for duplicate checks">
+      <option name="closed" value="true" />
+      <created>1744290279084</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290279084</updated>
+    </task>
+    <task id="LOCAL-00132" summary="updated readme">
+      <option name="closed" value="true" />
+      <created>1744290366544</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1744290366545</updated>
+    </task>
+    <task id="LOCAL-00133" summary="changing contract ShortenUrlRequest frombody">
+      <option name="closed" value="true" />
+      <created>1744296050706</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1744296050706</updated>
+    </task>
+    <task id="LOCAL-00134" summary="gateway refactor">
+      <option name="closed" value="true" />
+      <created>1744296070433</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1744296070434</updated>
+    </task>
+    <task id="LOCAL-00135" summary="[changed] in react sending longUrl from body">
+      <option name="closed" value="true" />
+      <created>1744296101582</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1744296101582</updated>
+    </task>
+    <option name="localTasksCounter" value="136" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -846,17 +823,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="removing minimal api endpoints and" />
-    <MESSAGE value="removing minimal api endpoints" />
-    <MESSAGE value="Added and configuring serilog" />
-    <MESSAGE value="setting http headers property in gateway" />
-    <MESSAGE value="[refactored] controllers with moving retrievals into the shortener service" />
-    <MESSAGE value="Moving classes and renaming folders" />
-    <MESSAGE value="adding redis configuration" />
-    <MESSAGE value="creating redis services" />
-    <MESSAGE value="added redis for caching in shorten service" />
-    <MESSAGE value="registered and configured redis" />
-    <MESSAGE value="." />
     <MESSAGE value="modified shortener controller" />
     <MESSAGE value="Removing comments from gatway" />
     <MESSAGE value="Merge branch 'master' of https://github.com/Edrisym/Shortener" />
@@ -871,7 +837,18 @@
     <MESSAGE value="adding DevController" />
     <MESSAGE value="moved controlelr to user folder" />
     <MESSAGE value="adding DashboardShortenerController" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding DashboardShortenerController" />
+    <MESSAGE value="registring IAnalyticService" />
+    <MESSAGE value="renaming prop in UrlAnalyticResponse &#10;ViewCount -&gt; VisitCount" />
+    <MESSAGE value="getting the view and Analytics based on user" />
+    <MESSAGE value="renaming instance name to blink" />
+    <MESSAGE value="adding blink to route in controller" />
+    <MESSAGE value="." />
+    <MESSAGE value="removing longUrl from query for duplicate checks" />
+    <MESSAGE value="updated readme" />
+    <MESSAGE value="changing contract ShortenUrlRequest frombody" />
+    <MESSAGE value="gateway refactor" />
+    <MESSAGE value="[changed] in react sending longUrl from body" />
+    <option name="LAST_COMMIT_MESSAGE" value="[changed] in react sending longUrl from body" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -900,6 +877,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/blink/Controllers/User/ShortenerController.cs</url>
+          <line>13</line>
+          <properties documentPath="$PROJECT_DIR$/blink/Controllers/User/ShortenerController.cs" initialLine="14" containingFunctionPresentation="Method 'ShortenUrl'">
+            <startOffsets>
+              <option value="501" />
+            </startOffsets>
+            <endOffsets>
+              <option value="574" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

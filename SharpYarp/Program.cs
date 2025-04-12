@@ -1,4 +1,16 @@
+using Figgle;
+
+Console.WriteLine(FiggleFonts.Standard.Render("Sharp Yarp Gateway"));
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+Console.WriteLine("gateway is running on {0}", builder.Environment.EnvironmentName);
 
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
