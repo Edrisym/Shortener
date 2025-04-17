@@ -14,6 +14,36 @@ Console.WriteLine("gateway is running on {0}", builder.Environment.EnvironmentNa
 
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    // .AddTransforms(builderContext =>
+    // {
+    //     builderContext.AddRequestTransform(async transformContext =>
+    //     {
+    //         var request = transformContext.HttpContext.Request;
+    //
+    //         void CopyHeader(string source, string target)
+    //         {
+    //             if (request.Headers.TryGetValue(source, out var value))
+    //             {
+    //                 transformContext.ProxyRequest.Headers.Remove(target);
+    //                 transformContext.ProxyRequest.Headers.Add(target, value.ToArray());
+    //             }
+    //         }
+    //
+    //         CopyHeader("X-Forwarded-Agent", "X-Forwarded-Agent");
+    //         CopyHeader("X-Forwarded-Referer", "X-Forwarded-Referer");
+    //         CopyHeader("X-Forwarded-UserId", "X-Forwarded-UserId");
+    //         CopyHeader("X-Forwarded-IP", "X-Forwarded-IP");
+    //
+    //         await ValueTask.CompletedTask;
+    //     });
+    // })
+    // .ConfigureHttpClient((context, handler) =>
+    // {
+    //     var socketsHandler = handler as SocketsHttpHandler;
+    //     socketsHandler.PooledConnectionLifetime = TimeSpan.FromMinutes(5);
+    //     socketsHandler.PooledConnectionIdleTimeout = TimeSpan.FromSeconds(30);
+    //     socketsHandler.MaxConnectionsPerServer = 100;
+    // });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
