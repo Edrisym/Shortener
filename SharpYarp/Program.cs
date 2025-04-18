@@ -1,4 +1,5 @@
 using Figgle;
+using SharpYarp;
 
 Console.WriteLine(FiggleFonts.Standard.Render("Sharp Yarp Gateway"));
 
@@ -45,18 +46,19 @@ app.MapReverseProxy(proxyPipeline =>
             return;
         }
 
-        switch (context.Request.Method)
+        switch (context.Request.Method.ToHttpMethodEnum())
         {
-            case "POST":
+            case HttpMethodEnum.Post:
                 context.Request.Path = "/api/v1/blink/shortener/shorten";
                 break;
-            case "GET":
+            case HttpMethodEnum.Get:
             {
                 var code = path.Trim('/');
                 context.Request.Path = "/api/v1/blink/shortener/redirect";
                 context.Request.QueryString = new QueryString($"?code={code}");
                 break;
             }
+            case HttpMethodEnum.Unsupported:
             default:
                 context.Response.StatusCode = 405;
                 await context.Response.WriteAsync("Method Not Allowed");
