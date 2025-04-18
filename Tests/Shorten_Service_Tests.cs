@@ -5,6 +5,7 @@ using blink.Common.Models;
 using blink.Controllers.User.DTOs.Requests;
 using blink.Persistence;
 using blink.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Tests;
 
@@ -14,6 +15,7 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
     private readonly Mock<IHashGenerator> _hashGeneratorMock = new();
     private readonly Mock<IRedisCacheService> _redisMock = new();
     private readonly ShortenerDbContext _dbContext;
+    public readonly Mock<ILogger<ShortenService>> _logger = new();
 
     public ShortenServiceTests(BaseFixture fixture)
     {
@@ -25,7 +27,8 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
             UrlSettings = new UrlSettings { BaseUrls = new BaseUrls { Gateway = "http://localhost:5255" } }
         });
 
-        _service = new ShortenService(_hashGeneratorMock.Object, settingsMock.Object, _dbContext, _redisMock.Object);
+        _service = new ShortenService(_hashGeneratorMock.Object, settingsMock.Object, _dbContext, _redisMock.Object,
+            _logger.Object);
     }
 
     [Fact]
@@ -66,7 +69,7 @@ public class ShortenServiceTests : IClassFixture<BaseFixture>
         // Arrange
         var sampleUrl = "https://Anotherexample.com";
         var sampleShortCode = "abc123";
-        
+
         _dbContext.Urls.Add(new Url(longUrl: sampleUrl, shortCode: sampleShortCode));
         await _dbContext.SaveChangesAsync();
 

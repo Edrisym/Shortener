@@ -6,7 +6,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Formatting.Compact;
-using Serilog.Sinks.Grafana.Loki;
+using Serilog.Sinks.Network;
 using StackExchange.Redis;
 
 namespace blink;
@@ -51,38 +51,17 @@ public static class Program
 
     static WebApplicationBuilder ConfigureSerilog(this WebApplicationBuilder builder)
     {
-        //TODO clean this 
-
-        var labels = new List<LokiLabel>
-        {
-            new() { Key = "app", Value = "BlinkUrl" },
-            // new() { Key = "env", Value = "production" },
-            // new() { Key = "env", Value = "development" }
-        };
-
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .Enrich.WithClientIp()
-            .Enrich.WithCorrelationId()
             .Enrich.WithProperty("Service", "BlinkUrl")
-            .Enrich.With<OpenTelemetryLogEnricher>()
             .Enrich.WithRequestHeader(GatewayHeaders.UserId)
             .Enrich.WithRequestHeader(GatewayHeaders.Agent)
             .Enrich.WithRequestHeader(GatewayHeaders.Referer)
             .Enrich.WithRequestHeader(GatewayHeaders.Ip)
             .Enrich.WithMachineName()
-            .Enrich.WithThreadId()
             .Enrich.WithThreadName()
+            .WriteTo.TCPSink("tls://logstash", 5001, new RenderedCompactJsonFormatter())
             .WriteTo.Console(new RenderedCompactJsonFormatter())
-            // .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
-            // .WriteTo.GrafanaLoki("http://localhost:3100", labels)
-
-            //TODO: add to elastic and remove file logging after testing
-            // .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
-            // {
-            //     AutoRegisterTemplate = true,
-            //     IndexFormat = "shortener-logs-{0:yyyy.MM}"
-            // })
             .CreateLogger();
 
         builder.Host.UseSerilog();

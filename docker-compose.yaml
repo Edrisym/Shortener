@@ -11,6 +11,7 @@ services:
     depends_on:
       - mongodb
       - redis
+      - logstash
     environment:
       - ConnectionStrings__PostgreSql=Host=mongodb;Port=27017;Database=blinkDb
       - AppSettings__Redis__Configuration=redis:6379,abortConnect=false
@@ -19,6 +20,8 @@ services:
       - AppSettings__DatabaseSettings__DatabaseName=blinkDb
       - AppSettings__DatabaseSettings__Collections__ShortenerCollection=url
       - ASPNETCORE_ENVIRONMENT=Local
+    networks:
+      - elk
     restart: always
 
   gateway:
@@ -27,13 +30,15 @@ services:
       dockerfile: SharpYarp/Dockerfile
     container_name: sharp_yarp_gateway
     ports:
-      - "4444:8080" 
+      - "4444:8080"
     depends_on:
       - api
     environment:
       - ASPNETCORE_ENVIRONMENT=Local
+    networks:
+      - elk
     restart: always
-  
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -41,6 +46,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodata:/data/db
+    networks:
+      - elk
 
   redis:
     image: redis:latest
@@ -49,6 +56,8 @@ services:
       - "6379:6379"
     volumes:
       - redisdata:/data
+    networks:
+      - elk
     restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
@@ -56,6 +65,52 @@ services:
       timeout: 3s
       retries: 5
 
+  elasticsearch:
+    image: elasticsearch:8.11.1
+    container_name: elastic
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    networks:
+      - elk
+
+  logstash:
+    image: logstash:8.11.1
+    container_name: logstash
+    ports:
+      - "5005:5005" # TCP input for Serilog
+      - "9600:9600" # Logstash monitoring
+    volumes:
+      - ./blink/logstash/pipeline:/usr/share/logstash/pipeline
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:8.11.1
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
 volumes:
   mongodata:
   redisdata:
+
+networks:
+  elk:
+    driver: bridge
