@@ -118,8 +118,6 @@ public static class Program
         {
             options.Configuration = settings.Configuration;
             options.InstanceName = settings.InstanceName;
-            Console.WriteLine("----{0}", settings.InstanceName);
-            Console.WriteLine("----{0}", settings.Configuration);
             options.ConnectionMultiplexerFactory = async () => await Task.FromResult(connMultiplexer);
         });
         return services;
@@ -169,8 +167,8 @@ public static class Program
                 .AddProcessInstrumentation()
                 .AddMeter(builder.Environment.ApplicationName);
 
-            // if (builder.Environment.IsDevelopment())
-            // metrics.AddConsoleExporter();
+            if (builder.Environment.IsDevelopment())
+                metrics.AddConsoleExporter();
             metrics.AddPrometheusExporter(options => { options.ScrapeEndpointPath = "/metrics"; });
             // else
             //     metrics.AddOtlpExporter();
@@ -187,8 +185,8 @@ public static class Program
                 .AddHttpClientInstrumentation()
                 .AddRedisInstrumentation();
 
-            // if (builder.Environment.IsDevelopment())
-            // tracing.AddConsoleExporter();
+            if (builder.Environment.IsDevelopment())
+                tracing.AddConsoleExporter();
             // else
             // tracing.AddOtlpExporter();
 
