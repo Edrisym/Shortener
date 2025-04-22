@@ -1,3 +1,6 @@
+using Prometheus;
+using Serilog.Context;
+
 namespace blink.Services;
 
 public interface IShortenService
@@ -12,7 +15,8 @@ public class ShortenService(
     IHashGenerator hashGenerator,
     IOptions<AppSettings> settings,
     ShortenerDbContext dbContext,
-    IRedisCacheService redis) : IShortenService
+    IRedisCacheService redis,
+    ILogger<ShortenService> logger) : IShortenService
 {
     private readonly UrlSettings _settings = settings.Value.UrlSettings;
 
@@ -20,22 +24,30 @@ public class ShortenService(
         ShortenUrlRequest request,
         CancellationToken cancellationToken)
     {
-        var shortCode = hashGenerator.GenerateShortCode(request.LongUrl);
-        var shortUrl = $"{_settings.BaseUrls.Gateway}/{shortCode}";
-        if (await UrlExists(shortCode, cancellationToken))
+        using (LogContext.PushProperty("longUrl", request.LongUrl))
+        {
+            var shortCode = hashGenerator.GenerateShortCode(request.LongUrl);
+            var shortUrl = $"{_settings.BaseUrls.Gateway}/{shortCode}";
+            if (await UrlExists(shortCode, cancellationToken))
+            {
+                logger.LogInformation("Link existed {ShortUrl}", shortUrl);
+                return shortUrl;
+            }
+
+            var url = new Url
+            (
+                longUrl: request.LongUrl,
+                shortCode: shortCode
+            );
+
+            await dbContext.Urls.AddAsync(url, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            await redis.SetCacheValueAsync(url.ShortCode, url, expiration: TimeSpan.FromSeconds(60));
+
+            logger.LogInformation("Link was shortened {ShortUrl}", shortUrl);
+
             return shortUrl;
-
-        var url = new Url
-        (
-            longUrl: request.LongUrl,
-            shortCode: shortCode
-        );
-
-        await dbContext.Urls.AddAsync(url, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
-        await redis.SetCacheValueAsync(url.ShortCode, url, expiration: TimeSpan.FromSeconds(60));
-
-        return shortUrl;
+        }
     }
 
     [Obsolete("Obsolete")]
@@ -84,6 +96,6 @@ public class ShortenService(
         CancellationToken cancellationToken)
     {
         return await dbContext.Urls
-           .AnyAsync(url => url.ShortCode == code, cancellationToken);
+            .AnyAsync(url => url.ShortCode == code, cancellationToken);
     }
 }
