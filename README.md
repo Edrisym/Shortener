@@ -20,11 +20,11 @@
 -->
 
 <div align="center">
-  <a href="https://github.com/Edrisym/Blink/graphs/contributors"><img src="https://img.shields.io/github/contributors/opendevin/opendevin?style=for-the-badge" alt="Contributors"></a>
-  <a href="https://github.com/Edrisym/Blink/network/members"><img src="https://img.shields.io/github/forks/opendevin/opendevin?style=for-the-badge" alt="Forks"></a>
-  <a href="https://github.com/Edrisym/Blink/stargazers"><img src="https://img.shields.io/github/stars/opendevin/opendevin?style=for-the-badge" alt="Stargazers"></a>
-  <a href="https://github.com/Edrisym/Blink/issues"><img src="https://img.shields.io/github/issues/opendevin/opendevin?style=for-the-badge" alt="Issues"></a>
-  <a href="https://github.com/Edrisym/Blink/blob/main/LICENSE"><img src="https://img.shields.io/github/license/opendevin/opendevin?style=for-the-badge" alt="MIT License"></a>
+  <a href="https://github.com/Edrisym/Blink/graphs/contributors"><img src="https://img.shields.io/github/contributors/Edrisym/Blink?style=for-the-badge" alt="Contributors"></a>
+  <a href="https://github.com/Edrisym/Blink/network/members"><img src="https://img.shields.io/github/forks/Edrisym/Blink?style=for-the-badge" alt="Forks"></a>
+  <a href="https://github.com/Edrisym/Blink/stargazers"><img src="https://img.shields.io/github/stars/Edrisym/Blink?style=for-the-badge" alt="Stargazers"></a>
+  <a href="https://github.com/Edrisym/Blink/issues"><img src="https://img.shields.io/github/issues/Edrisym/Blink?style=for-the-badge" alt="Issues"></a>
+  <a href="https://github.com/Edrisym/Blink/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Edrisym/Blink?style=for-the-badge" alt="MIT License"></a>
 </div>
 
 
